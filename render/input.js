@@ -7,7 +7,7 @@ import { payRansom } from "../src/factions.js";
 import { chooseEncounter } from "../src/encounters.js";
 import { recruitStalker, selectStalker } from "../src/stalkers.js";
 import { buyUpgrade } from "../src/upgrades.js";
-import { $, renderAll, renderSell, renderExp } from "./hud.js";
+import { $, renderAll, renderSell, renderExp, showNightRecap } from "./hud.js";
 
 export function bindInput(state) {
   document.querySelectorAll(".tab").forEach(t => {
@@ -20,9 +20,15 @@ export function bindInput(state) {
   });
 
   $("#nextDay").onclick = () => {
+    const logBox = $("#log");
+    const before = logBox.children.length;
     nextDay(state);
     // on game end, the game:ended handler renders the top bar and the modal
-    if (!state.over) renderAll(state);
+    if (!state.over) {
+      renderAll(state);
+      // journal entries are prepended, so the night's entries are the first N children
+      showNightRecap(state.day, [...logBox.children].slice(0, logBox.children.length - before));
+    }
   };
 
   $("#game").addEventListener("click", e => {

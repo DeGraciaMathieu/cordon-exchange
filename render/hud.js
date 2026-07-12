@@ -33,6 +33,17 @@ export function showModal(title, html) {
   $("#modal").classList.add("show");
 }
 
+// blocking night report: replays the journal entries added during nextDay()
+export function showNightRecap(day, entries) {
+  const rows = entries.reverse().filter(e => !e.querySelector(".day")).map(e => e.outerHTML).join("");
+  $("#mTitle").textContent = `Jour ${day} — rapport de la nuit`;
+  $("#mText").innerHTML = `<div class="recap">${rows || `<div class="e">La nuit fut calme. Rien à signaler.</div>`}</div>`;
+  const btn = $("#mBtn");
+  btn.textContent = "Continuer";
+  btn.onclick = () => $("#modal").classList.remove("show");
+  $("#modal").classList.add("show");
+}
+
 export function renderTop(state) {
   $("#money").textContent = fmt(state.money);
   $("#debt").textContent = fmt(state.debt);

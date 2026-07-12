@@ -154,6 +154,13 @@ h1 span{color:var(--rust)}
   max-width:520px;text-align:center}
 .modal h2{color:var(--gold);letter-spacing:2px;margin-bottom:12px}
 .modal p{color:var(--txt);line-height:1.6;margin-bottom:10px}
+.modal .recap{text-align:left;font-family:var(--mono);font-size:12px;line-height:1.55;
+  max-height:55vh;overflow-y:auto}
+.recap .e{margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.recap .e:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.recap .story{color:var(--gold)}
+.recap .good{color:var(--rad)} .recap .bad{color:var(--danger)}
+.recap .ev{color:var(--blue)}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--panel2);
   border:1px solid var(--rust);color:var(--txt);padding:10px 18px;border-radius:6px;font-size:13px;
   opacity:0;transition:.3s;pointer-events:none;z-index:60}
