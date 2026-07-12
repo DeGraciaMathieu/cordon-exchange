@@ -40,7 +40,7 @@ export function renderTop(state) {
   const dose = radsDose(state);
   const rd = $("#rads");
   rd.textContent = `${state.rads} ☢${dose > 0 ? ` +${dose}/nuit` : ""}`;
-  rd.style.color = state.rads >= RADIATION.sickAt ? "var(--danger)" : state.rads >= RADIATION.sickAt / 2 ? "var(--gold)" : "var(--rad)";
+  rd.style.color = state.rads >= RADIATION.sickAt ? "var(--danger)" : state.rads >= RADIATION.sickAt / 2 ? "var(--rust)" : "var(--txt)";
   const r = $("#reps");
   r.innerHTML = "";
   for (const k in FACTIONS) {
@@ -69,13 +69,16 @@ function sparkline(history, base) {
   </svg>`;
 }
 
-function trendMark(state, id) {
+function trendMark(state, id, deal) {
   const it = itemById(id);
   const p = Math.round((state.price[id] - it.base) / it.base * 100);
+  if (deal) return `<span class="trend deal-tag">💰 ${p}% · sous-évalué</span>`;
   if (p > 4) return `<span class="trend up">▲ ${p}%</span>`;
   if (p < -4) return `<span class="trend down">▼ ${p}%</span>`;
   return `<span class="trend" style="color:var(--dim)">— stable</span>`;
 }
+
+const metaLine = it => `<div class="meta">${it.cat}${it.rad ? ` · ☢ ${it.rad}` : ""}</div>`;
 
 export function renderMarket(state) {
   const g = $("#marketGrid");
@@ -85,15 +88,14 @@ export function renderMarket(state) {
     const canBuy = state.money >= bp && !state.over;
     const q = state.inv[it.id];
     const deal = isUndervalued(state, it.id);
-    g.innerHTML += `<div class="card ${it.cat === "artefact" ? "" : "gear"}${deal ? " deal" : ""}">
+    g.innerHTML += `<div class="card${deal ? " deal" : ""}">
       ${q ? `<span class="qty">×${q}</span>` : ""}
       <div class="ico">${it.ico}</div>
       <div class="nm">${it.nm}</div>
-      ${it.rad ? `<div class="rad">☢ rad ${it.rad}</div>` : `<div class="rad" style="color:var(--dim)">${it.cat}</div>`}
+      ${metaLine(it)}
       <div class="price">${fmt(bp)}</div>
-      ${trendMark(state, it.id)}
+      ${trendMark(state, it.id, deal)}
       ${sparkline(state.history[it.id], it.base)}
-      ${deal ? `<div class="deal-tag">💰 sous-évalué</div>` : ""}
       <div class="row">
         <button class="btn sm" ${canBuy ? "" : "disabled"} data-act="buy" data-id="${it.id}" data-n="1">Acheter</button>
         <button class="btn sm" ${state.money >= bp * 5 && !state.over ? "" : "disabled"} data-act="buy" data-id="${it.id}" data-n="5">×5</button>
@@ -114,7 +116,7 @@ function renderFactionBar(state) {
   }
   const fac = state.sellFaction;
   const best = Object.entries(PREF[fac]).sort((a, b) => b[1] - a[1])[0][0];
-  $("#sellNote").innerHTML = `<b style="color:${FACTIONS[fac].color}">${FACTIONS[fac].name}</b> paie le mieux la catégorie « <b>${best}</b> ». Vendre ici modifie ta réputation avec les autres. 🎲 Marchander : +${Math.round(HAGGLE.bonus * 100)}% si ça passe, réput −${HAGGLE.repPenalty} si ça vexe.`;
+  $("#sellNote").innerHTML = `<b style="color:${FACTIONS[fac].color}">${FACTIONS[fac].name}</b> paie le mieux la catégorie « <b>${best}</b> ».`;
 }
 
 export function renderSell(state) {
@@ -127,11 +129,11 @@ export function renderSell(state) {
   owned.forEach(it => {
     const sp = sellPrice(state, it.id, fac);
     const profit = sp - it.base;
-    g.innerHTML += `<div class="card ${it.cat === "artefact" ? "" : "gear"}">
+    g.innerHTML += `<div class="card">
       <span class="qty">×${state.inv[it.id]}</span>
       <div class="ico">${it.ico}</div>
       <div class="nm">${it.nm}</div>
-      <div class="rad" style="color:var(--dim)">${it.cat}</div>
+      ${metaLine(it)}
       <div class="price">${fmt(sp)}</div>
       <div class="trend ${profit >= 0 ? "down" : "up"}">${profit >= 0 ? "gain" : "perte"} ${fmt(Math.abs(profit))}</div>
       ${sparkline(state.history[it.id], it.base)}
@@ -278,10 +280,10 @@ export function renderUpgrades(state) {
   $("#upgradesGrid").innerHTML = UPGRADES.map(u => {
     const owned = hasUpgrade(state, u.id);
     const can = !owned && state.money >= u.cost && !state.over;
-    return `<div class="card gear${owned ? " deal" : ""}">
+    return `<div class="card${owned ? " deal" : ""}">
       <div class="ico">${u.ico}</div>
       <div class="nm">${u.nm}</div>
-      <div class="rad" style="color:var(--dim)">${u.desc}</div>
+      <div class="meta">${u.desc}</div>
       <div class="price">${owned ? "✓ installée" : fmt(u.cost)}</div>
       <button class="btn sm" ${can ? "" : "disabled"} data-act="upgrade" data-id="${u.id}">${owned ? "Acquise" : "Acheter"}</button>
     </div>`;

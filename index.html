@@ -12,10 +12,10 @@
   <div class="sub">— négoce, réputation & survie dans la Zone —</div>
 
   <div class="topbar">
-    <div class="stat"><small>Roubles</small><b id="money">2 000 ₽</b></div>
+    <div class="stat money"><small>Roubles</small><b id="money">2 000 ₽</b></div>
     <div class="stat debt"><small>Dette au Fixeur</small><b id="debt">25 000 ₽</b></div>
     <div class="stat"><small>Radiations</small><b id="rads">0 ☢</b></div>
-    <div class="stat day"><small>Jour</small><b id="day">1 / 24</b></div>
+    <div class="stat"><small>Jour</small><b id="day">1 / 24</b></div>
     <div class="spacer"></div>
     <div class="reps" id="reps"></div>
   </div>
@@ -34,27 +34,37 @@
   </div>
 
   <div class="view active" id="v-market">
-    <div class="hint" style="margin-bottom:8px">Achète bas, revends haut. Les prix bougent chaque jour selon la Zone — la courbe montre les derniers jours, le pointillé le prix de référence. 💰 sous-évalué = nettement sous la référence. <span id="mkt-note"></span></div>
+    <details class="help"><summary>Aide</summary>
+      <div class="hint">Achète bas, revends haut : les prix bougent chaque jour selon la Zone. Au survol d'une carte, la courbe montre les derniers jours et le pointillé le prix de référence. 💰 sous-évalué = nettement sous la référence.</div>
+    </details>
+    <div class="hint" id="mkt-note"></div>
     <div class="grid" id="marketGrid"></div>
   </div>
 
   <div class="view" id="v-sell">
     <div class="factionbar" id="factionbar"></div>
-    <div class="hint" id="sellNote" style="margin-bottom:8px"></div>
+    <details class="help"><summary>Aide</summary>
+      <div class="hint">Chaque faction paie mieux sa catégorie favorite. Vendre à une faction améliore ta réputation chez elle et la dégrade chez ses rivales. 🎲 Marchander tente un meilleur prix, au risque de vexer l'acheteur (réputation en moins).</div>
+    </details>
+    <div class="hint" id="sellNote"></div>
     <div class="grid" id="sellGrid"></div>
   </div>
 
   <div class="view" id="v-contracts">
     <div id="threats"></div>
     <div class="sect">Commandes disponibles</div>
-    <div class="hint" style="margin-bottom:8px">Accepte une commande, livre les artefacts avant l'échéance : gros paiement + réputation. Rate le délai et la faction t'en tiendra rigueur.</div>
+    <details class="help"><summary>Aide</summary>
+      <div class="hint">Accepte une commande, livre les artefacts avant l'échéance : gros paiement + réputation. Rate le délai et la faction t'en tiendra rigueur.</div>
+    </details>
     <div id="offers"></div>
     <div class="sect">Contrats en cours</div>
     <div id="activeDeliv"></div>
   </div>
 
   <div class="view" id="v-exp">
-    <div class="hint" style="margin-bottom:8px">Envoie un stalker chercher des artefacts. Plus la zone est profonde, plus c'est risqué… et lucratif. Chaque stalker a un trait, gagne des niveaux à force de survivre — et meurt pour de bon.</div>
+    <details class="help"><summary>Aide</summary>
+      <div class="hint">Envoie un stalker chercher des artefacts. Plus la zone est profonde, plus c'est risqué… et lucratif. Chaque stalker a un trait, gagne des niveaux à force de survivre — et meurt pour de bon.</div>
+    </details>
     <div class="sect">Ton équipe</div>
     <div class="factionbar" id="roster"></div>
     <div id="activeExps"></div>
@@ -64,7 +74,9 @@
   </div>
 
   <div class="view" id="v-upgrades">
-    <div class="hint" style="margin-bottom:8px">Investis tes roubles dans la planque : chaque amélioration est définitive et travaille pour toi jusqu'au bout.</div>
+    <details class="help"><summary>Aide</summary>
+      <div class="hint">Investis tes roubles dans la planque : chaque amélioration est définitive et travaille pour toi jusqu'au bout.</div>
+    </details>
     <div class="grid" id="upgradesGrid"></div>
   </div>
 
@@ -75,7 +87,9 @@
   <div class="foot">
     <button class="btn big" id="nextDay" style="flex:1">Dormir — Jour suivant ▸</button>
   </div>
-  <div class="hint" style="margin-top:8px">💡 Vendre à une faction ravit ses alliés et fâche ses rivaux. Guettez la bannière : guerres (comptoir fermé, choisis ton camp), contrats +50%, blocus et raids changent la donne. Chaque jour, une rencontre t'offre un choix risqué — l'occasion disparaît le lendemain. ☢ Les artefacts en stock t'irradient chaque nuit : revends-les vite ou paie les soins.</div>
+  <details class="help tips"><summary>Conseils de survie</summary>
+    <div class="hint">💡 Vendre à une faction ravit ses alliés et fâche ses rivaux. Guettez la bannière : guerres (comptoir fermé, choisis ton camp), contrats +50%, blocus et raids changent la donne. Chaque jour, une rencontre t'offre un choix risqué — l'occasion disparaît le lendemain. ☢ Les artefacts en stock t'irradient chaque nuit : revends-les vite ou paie les soins.</div>
+  </details>
 </div>
 
 <div class="modal" id="modal"><div class="box">
