@@ -2,8 +2,8 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createApp } from "../src/app.js";
 import { mulberry32, pick } from "../src/rng.js";
-import { buyPrice, sellPrice, buy, sell, fluctuate } from "../src/market.js";
-import { ITEMS, START, MARKET, MARKET_EVENTS } from "../src/config.js";
+import { buyPrice, sellPrice, buy, sell, haggle, fluctuate } from "../src/market.js";
+import { ITEMS, START, MARKET, MARKET_EVENTS, HAGGLE } from "../src/config.js";
 
 const app = seed => createApp({ rng: mulberry32(seed) });
 
@@ -55,6 +55,42 @@ test("supplying the aggressor with weapons raises war support", () => {
   s.inv.ammo = 3;
   sell(s, "ammo", 3);
   assert.equal(war.support, 3);
+});
+
+test("a winning haggle sells one item above the faction price", () => {
+  const s = createApp({ rng: () => 0 }); // roll 0 < chance -> the faction gives in
+  s.inv.medusa = 2;
+  const expected = Math.round(sellPrice(s, "medusa", "loners") * (1 + HAGGLE.bonus));
+  const rep0 = s.rep.loners;
+  haggle(s, "medusa");
+  assert.equal(s.money, START.money + expected);
+  assert.equal(s.inv.medusa, 1);
+  assert.ok(s.rep.loners > rep0); // a landed haggle is still a sale
+});
+
+test("a failed haggle vexes the faction and cancels the sale", () => {
+  const s = createApp({ rng: () => 0.999 }); // roll above chance -> vexed
+  s.inv.medusa = 2;
+  const rep0 = s.rep.loners;
+  let seen = null;
+  s.bus.on("trade:haggled", e => seen = e);
+  haggle(s, "medusa");
+  assert.equal(s.money, START.money); // no sale
+  assert.equal(s.inv.medusa, 2);      // item kept
+  assert.equal(s.rep.loners, rep0 - HAGGLE.repPenalty);
+  assert.equal(seen.success, false);
+});
+
+test("haggling with a closed counter is blocked", () => {
+  const s = app(7);
+  s.factionEvents.push({ type: "war", a: "duty", b: "loners", left: 2, support: 0 });
+  s.inv.medusa = 1;
+  let blocked = false;
+  s.bus.on("trade:blocked", () => blocked = true);
+  haggle(s, "medusa");
+  assert.equal(blocked, true);
+  assert.equal(s.inv.medusa, 1);
+  assert.equal(s.money, START.money);
 });
 
 test("prices stay within their clamps over many days", () => {
