@@ -1,5 +1,5 @@
 // All DOM rendering: top bar, grids, contracts, expeditions, journal, toast, modal.
-import { FACTIONS, PREF, ITEMS, ZONES, MAX_DAY, FACTION_EVENTS, HAGGLE, RADIATION, TRAITS, ROSTER, UPGRADES, itemById, encounterById, stalkerById } from "../src/config.js";
+import { FACTIONS, PREF, ITEMS, ZONES, MAX_DAY, FACTION_EVENTS, HAGGLE, RADIATION, TRAITS, ROSTER, UPGRADES, MERCHANTS, itemById, encounterById, stalkerById } from "../src/config.js";
 import { buyPrice, sellPrice, isUndervalued } from "../src/market.js";
 import { marketClosed, zoneBlocked, bountyExtraDeath } from "../src/factions.js";
 import { canPick } from "../src/encounters.js";
@@ -92,9 +92,17 @@ function trendMark(state, id, deal) {
 const metaLine = it => `<div class="meta">${it.cat}${it.rad ? ` · ☢ ${it.rad}` : ""}</div>`;
 
 export function renderMarket(state) {
+  const bar = $("#merchantbar");
+  bar.innerHTML = "";
+  for (const k in MERCHANTS) {
+    const m = MERCHANTS[k];
+    bar.innerHTML += `<button class="fbtn ${state.buyMerchant === k ? "active" : ""}" data-act="merchant" data-id="${k}">
+      <b>${m.ico} ${m.name}</b>
+      <small>${m.desc}</small></button>`;
+  }
   const g = $("#marketGrid");
   g.innerHTML = "";
-  ITEMS.forEach(it => {
+  ITEMS.filter(it => it.cat === MERCHANTS[state.buyMerchant].cat).forEach(it => {
     const bp = buyPrice(state, it.id);
     const canBuy = state.money >= bp && !state.over;
     const q = state.inv[it.id];

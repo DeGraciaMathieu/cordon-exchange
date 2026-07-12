@@ -29,6 +29,7 @@ export function createApp({ rng }) {
     activeDeliveries: [],
     contractSeq: 0,
     sellFaction: START.sellFaction,
+    buyMerchant: START.buyMerchant,
     milestones: {},
     over: false,
     encounter: null,

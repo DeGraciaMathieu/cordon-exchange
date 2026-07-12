@@ -9,6 +9,7 @@ export const START = {
   rep: { loners: 10, duty: 0, freedom: 0, bandits: -10 },
   inv: { medusa: 1, sausage: 2 },
   sellFaction: "loners",
+  buyMerchant: "barman",
 };
 
 export const FACTIONS = {
@@ -20,6 +21,13 @@ export const FACTIONS = {
 export const FACTION_IDS = Object.keys(FACTIONS);
 export const BLOCKADE_FACTIONS = ["duty", "freedom", "bandits"];
 export const CATEGORIES = ["artefact", "arme", "conso"];
+
+// buy-side merchants: each one only stocks the items of his trade (cat)
+export const MERCHANTS = {
+  scientist: { name: "Pr Sakharov",     ico: "🥼", cat: "artefact", desc: "artefacts sous scellés" },
+  gunsmith:  { name: "Osip l'Armurier", ico: "🔧", cat: "arme",     desc: "armes, munitions, armures" },
+  barman:    { name: "Le Cantinier",    ico: "🍶", cat: "conso",    desc: "vivres et remontants" },
+};
 
 // preference: multiplier a faction pays for a category
 export const PREF = {

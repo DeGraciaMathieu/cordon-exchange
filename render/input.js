@@ -1,13 +1,13 @@
 // Mouse input: tab navigation and click delegation to game actions.
 import { nextDay } from "../src/app.js";
-import { buy, sell, haggle, selectFaction } from "../src/market.js";
+import { buy, sell, haggle, selectFaction, selectMerchant } from "../src/market.js";
 import { launchExp } from "../src/expeditions.js";
 import { acceptDelivery, deliverContract } from "../src/contracts.js";
 import { payRansom } from "../src/factions.js";
 import { chooseEncounter } from "../src/encounters.js";
 import { recruitStalker, selectStalker } from "../src/stalkers.js";
 import { buyUpgrade } from "../src/upgrades.js";
-import { $, renderAll, renderSell, renderExp, showNightRecap } from "./hud.js";
+import { $, renderAll, renderSell, renderExp, renderMarket, showNightRecap } from "./hud.js";
 
 export function bindInput(state) {
   document.querySelectorAll(".tab").forEach(t => {
@@ -36,6 +36,7 @@ export function bindInput(state) {
     if (!btn) return;
     const { act, id, n } = btn.dataset;
     if (act === "faction") { selectFaction(state, id); renderSell(state); return; }
+    if (act === "merchant") { selectMerchant(state, id); renderMarket(state); return; }
     if (act === "stalker") { selectStalker(state, id); renderExp(state); return; }
     if (act === "buy") buy(state, id, +n);
     else if (act === "sell") sell(state, id, +n);

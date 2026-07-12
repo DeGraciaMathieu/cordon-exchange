@@ -1,5 +1,5 @@
 // Market prices, buying, and selling to factions.
-import { ITEMS, PREF, TRADE, MARKET, HAGGLE, itemById } from "./config.js";
+import { ITEMS, PREF, TRADE, MARKET, HAGGLE, MERCHANTS, itemById } from "./config.js";
 import { clamp } from "./util.js";
 import { catDemand, repMult, marketClosed, marketCatMult } from "./factions.js";
 import { shiftRep } from "./reputation.js";
@@ -7,6 +7,11 @@ import { upgradeFx } from "./upgrades.js";
 
 export function buyPrice(state, id) {
   return Math.round(state.price[id] * TRADE.buyMarkup);
+}
+
+// the selected merchant only stocks the items of his trade
+export function merchantSells(state, id) {
+  return itemById(id).cat === MERCHANTS[state.buyMerchant].cat;
 }
 
 // price a faction pays for an item (reputation + category preference + demand + inside contact)
@@ -18,6 +23,7 @@ export function sellPrice(state, id, fac) {
 }
 
 export function buy(state, id, n) {
+  if (!merchantSells(state, id)) return;
   const bp = buyPrice(state, id);
   let count = 0;
   for (let i = 0; i < n; i++) {
@@ -78,6 +84,10 @@ export function haggle(state, id) {
 
 export function selectFaction(state, fac) {
   state.sellFaction = fac;
+}
+
+export function selectMerchant(state, id) {
+  state.buyMerchant = id;
 }
 
 export function fluctuate(state, ev) {
