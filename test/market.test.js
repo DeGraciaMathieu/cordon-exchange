@@ -1,8 +1,8 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { createApp } from "../src/app.js";
+import { createApp, nextDay } from "../src/app.js";
 import { mulberry32, pick } from "../src/rng.js";
-import { buyPrice, sellPrice, buy, sell, haggle, fluctuate } from "../src/market.js";
+import { buyPrice, sellPrice, buy, sell, haggle, fluctuate, isUndervalued } from "../src/market.js";
 import { ITEMS, START, MARKET, MARKET_EVENTS, HAGGLE } from "../src/config.js";
 
 const app = seed => createApp({ rng: mulberry32(seed) });
@@ -100,4 +100,32 @@ test("prices stay within their clamps over many days", () => {
     assert.ok(s.price[it.id] >= Math.round(it.base * MARKET.minMult));
     assert.ok(s.price[it.id] <= Math.round(it.base * MARKET.maxMult));
   });
+});
+
+test("price history starts at base and follows the days", () => {
+  const s = app(8);
+  ITEMS.forEach(it => assert.deepEqual(s.history[it.id], [it.base]));
+  nextDay(s);
+  ITEMS.forEach(it => {
+    assert.equal(s.history[it.id].length, 2);
+    assert.equal(s.history[it.id][1], s.price[it.id]); // last point is today's price
+  });
+});
+
+test("price history is capped to the sparkline window", () => {
+  const s = app(9);
+  for (let i = 0; i < MARKET.historyLen + 5; i++) fluctuate(s, pick(s.rng, MARKET_EVENTS));
+  ITEMS.forEach(it => {
+    assert.equal(s.history[it.id].length, MARKET.historyLen);
+    assert.equal(s.history[it.id].at(-1), s.price[it.id]);
+  });
+});
+
+test("the undervalued signal fires at the configured threshold", () => {
+  const s = app(10);
+  const it = ITEMS[0];
+  s.price[it.id] = Math.floor(it.base * MARKET.undervaluedAt);
+  assert.equal(isUndervalued(s, it.id), true);
+  s.price[it.id] = it.base;
+  assert.equal(isUndervalued(s, it.id), false);
 });
