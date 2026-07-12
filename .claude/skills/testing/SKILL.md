@@ -35,7 +35,8 @@ Zéro mock : `src/` s'importe tel quel dans Node. Pas d'assertion sur des détai
 | `test/market.test.js` | Achat (arrêt à court d'argent), vente (prix + réputations), marchandage (succès/vexation/blocage), comptoir fermé, soutien de guerre, bornes de prix sur 300 jours, historique de prix (init/suivi/cap), signal sous-évalué |
 | `test/factions.test.js` | Résolution de guerre (gagnée/enlisée), prime (déclenchement, rançon, refus), cap d'événements, blocus, demande de catégorie |
 | `test/contracts.test.js` | Cycle offre → acceptation → livraison, livraison partielle, échéance ratée, expiration des offres |
-| `test/expeditions.test.js` | Coût du lancement, retour avec butin, expédition perdue |
+| `test/expeditions.test.js` | Coût du lancement, stalker occupé, traits (éclaireur/fouineur/vétéran), risque personnalisé, permadeath, xp et promotions |
+| `test/stalkers.test.js` | Niveaux (seuils et plafond), équipage de départ, recrutement (coût/cap/pool), sélection |
 | `test/encounters.test.js` | Tirage quotidien, effets d'option, needs non remplis, risque succès/échec, tuyau marché |
 | `test/radiation.test.js` | Dose nocturne des artefacts, récupération, mal des rads (frais), mort par radiations, revente qui stoppe l'irradiation |
 | `test/reputation.test.js` | Retombées alliés/rivaux, clamp ±100 |

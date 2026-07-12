@@ -10,7 +10,7 @@ auto_invoke: true
 
 | Concept | Implémentation |
 |---|---|
-| État complet | `createApp({rng})` — `src/app.js`. Champs : `day`, `money`, `debt`, `rep{fac}`, `price{id}`, `history{id: prix[]}`, `inv{id}`, `exps[]`, `factionEvents[]`, `deliveryOffers[]`, `activeDeliveries[]`, `contractSeq`, `sellFaction`, `milestones{}`, `over`, `encounter`, `marketTip`, `rads`, plus `rng` et `bus` |
+| État complet | `createApp({rng})` — `src/app.js`. Champs : `day`, `money`, `debt`, `rep{fac}`, `price{id}`, `history{id: prix[]}`, `inv{id}`, `exps[]`, `factionEvents[]`, `deliveryOffers[]`, `activeDeliveries[]`, `contractSeq`, `sellFaction`, `milestones{}`, `over`, `encounter`, `marketTip`, `rads`, `stalkers[]`, `activeStalker`, `fallen[]`, plus `rng` et `bus` |
 | Valeurs de départ | `START` et `DEBT.start` (22 000) — `src/config.js` ; inventaire initial : 1 Méduse, 2 Saucissons |
 | Boucle de jour | `nextDay(state)` — `src/app.js`, seule porte d'entrée de la simulation (bouton « Dormir ») |
 | Dette | `DEBT { start: 22000, garnish: 0.5 }` — prélèvement nocturne de 50 % du cash en tête de `nextDay` → `debt:paid` |

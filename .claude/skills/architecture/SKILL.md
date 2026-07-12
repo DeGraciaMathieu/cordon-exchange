@@ -22,7 +22,8 @@ Séparation stricte logique/rendu : `render/` importe `src/`, jamais l'inverse. 
 | `src/factions.js` | Événements de faction (guerre, contrat, blocus, raid, prime) + prédicats `marketClosed`, `zoneBlocked`, `hasBounty`, `bountyExtraDeath` + multiplicateurs `catDemand`, `repMult`, `marketCatMult` | config, rng, reputation |
 | `src/market.js` | `buyPrice`, `sellPrice`, `buy`, `sell`, `fluctuate`, `selectFaction` | config, util, factions, reputation |
 | `src/contracts.js` | `genDeliveryOffer`, `acceptDelivery`, `deliverContract`, `tickContracts` | config, rng, factions, reputation |
-| `src/expeditions.js` | `launchExp`, `resolveExps` | config, rng, factions |
+| `src/stalkers.js` | Roster : `stalkerLevel`, `isBusy`, `recruitPool`, `recruitStalker`, `selectStalker` | config |
+| `src/expeditions.js` | `launchExp`, `resolveExps`, `deathChance` (traits, niveaux, permadeath) | config, rng, factions, stalkers |
 | `src/encounters.js` | Rencontres à choix : `drawEncounter`, `canPick`, `chooseEncounter` (interpréteur des effets déclaratifs d'`ENCOUNTERS`) | config, rng, reputation |
 | `src/radiation.js` | Radiations du joueur : `radsDose`, `tickRadiation` (dose nocturne des artefacts, récupération, mal des rads, mort) | config |
 | `src/app.js` | `createApp({rng})` → `state` ; `nextDay(state)` — orchestration du jour | tous les modules `src/` |
@@ -47,6 +48,7 @@ Le bouton « Dormir » appelle `nextDay(state)` — seule porte d'entrée de la 
 | Nouvelle constante d'équilibrage | `src/config.js` (dans le groupe existant : `TRADE`, `BOUNTY`…) → l'utiliser dans le module concerné |
 | Nouvel item, zone ou événement de marché | `src/config.js` seulement (tout est data-driven) → `npm test` (`config.test.js` vérifie les refs) |
 | Nouvelle rencontre à choix | `src/config.js` → `ENCOUNTERS` (texte, options, effets déclaratifs — voir skill `rencontres`) → `npm test` |
+| Nouveau stalker ou trait | `src/config.js` → `STALKERS`/`TRAITS` ; l'effet d'un nouveau trait se code dans `src/expeditions.js` (voir skill `expeditions`) |
 | Nouvelle règle économique | `src/market.js` + constantes dans `config.js` → messages dans `render/main.js` si événement → `test/market.test.js` |
 | Nouveau type d'événement de faction | Voir procédure du skill `factions` |
 | Nouveau champ d'état | `src/app.js` `createApp` (valeur par défaut) → mutations dans le module de domaine → tests |
