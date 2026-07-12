@@ -2,7 +2,7 @@ import { test } from "node:test";
 import assert from "node:assert/strict";
 import { createApp, nextDay } from "../src/app.js";
 import { mulberry32, pick } from "../src/rng.js";
-import { buyPrice, sellPrice, buy, sell, haggle, fluctuate, isUndervalued } from "../src/market.js";
+import { buyPrice, sellPrice, buy, sell, haggle, fluctuate, isUndervalued, selectMerchant } from "../src/market.js";
 import { ITEMS, START, MARKET, MARKET_EVENTS, HAGGLE } from "../src/config.js";
 
 const app = seed => createApp({ rng: mulberry32(seed) });
@@ -17,10 +17,31 @@ test("buy moves money into inventory at the displayed price", () => {
 
 test("buy stops when the money runs out", () => {
   const s = app(2);
+  selectMerchant(s, "gunsmith");
   s.money = buyPrice(s, "rifle") + 10; // can afford exactly one
   buy(s, "rifle", 5);
   assert.equal(s.inv.rifle, 1);
   assert.ok(s.money < buyPrice(s, "rifle"));
+});
+
+test("a merchant refuses items outside his trade", () => {
+  const s = app(11); // default merchant is the barman: conso only
+  let emitted = false;
+  s.bus.on("item:bought", () => emitted = true);
+  buy(s, "rifle", 1);
+  assert.equal(s.inv.rifle, 0);
+  assert.equal(s.money, START.money);
+  assert.equal(emitted, false);
+});
+
+test("selecting a merchant opens his category to purchase", () => {
+  const s = app(12);
+  selectMerchant(s, "scientist");
+  assert.equal(s.buyMerchant, "scientist");
+  const bp = buyPrice(s, "medusa");
+  buy(s, "medusa", 1);
+  assert.equal(s.inv.medusa, START.inv.medusa + 1);
+  assert.equal(s.money, START.money - bp);
 });
 
 test("sell pays the faction price and shifts reputations", () => {

@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ITEMS, ZONES, FACTIONS, FACTION_IDS, CATEGORIES, PREF, ENCOUNTERS, STALKERS, TRAITS, ROSTER, itemById, stalkerById } from "../src/config.js";
+import { ITEMS, ZONES, FACTIONS, FACTION_IDS, CATEGORIES, PREF, MERCHANTS, START, ENCOUNTERS, STALKERS, TRAITS, ROSTER, itemById, stalkerById } from "../src/config.js";
 
 test("item ids are unique", () => {
   assert.equal(new Set(ITEMS.map(i => i.id)).size, ITEMS.length);
@@ -18,6 +18,13 @@ test("faction allies and rivals reference existing factions", () => {
 
 test("every faction prices every category", () => {
   FACTION_IDS.forEach(f => CATEGORIES.forEach(c => assert.equal(typeof PREF[f][c], "number")));
+});
+
+test("every category is stocked by a merchant and the starting merchant exists", () => {
+  const stocked = Object.values(MERCHANTS).map(m => m.cat);
+  CATEGORIES.forEach(c => assert.ok(stocked.includes(c), `category ${c} has no merchant`));
+  stocked.forEach(c => assert.ok(CATEGORIES.includes(c), `merchant cat ${c} unknown`));
+  assert.ok(MERCHANTS[START.buyMerchant]);
 });
 
 test("stalkers have unique ids, valid traits, and a valid starting crew", () => {
