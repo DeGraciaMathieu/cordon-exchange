@@ -11,7 +11,9 @@ auto_invoke: true
 | Concept | Implémentation |
 |---|---|
 | Prix courant | `state.price[id]`, initialisé à `ITEMS[].base` dans `createApp` |
-| Prix d'achat | `buyPrice(state, id)` = `round(price × TRADE.buyMarkup)` (1.05) — `src/market.js` |
+| Prix d'achat | `buyPrice(state, id)` = `round(price × TRADE.buyMarkup)` (1.05) — `src/market.js`, identique quel que soit le marchand |
+| Marchands (côté achat) | `MERCHANTS` (`src/config.js`) : Pr Sakharov (`artefact`), Osip l'Armurier (`arme`), Le Cantinier (`conso`) — chacun ne vend que sa catégorie (`merchantSells`, garde de `buy`) |
+| Marchand sélectionné | `state.buyMerchant` via `selectMerchant(state, id)` — défaut `START.buyMerchant` (cantinier) ; la grille du marché n'affiche que son stock |
 | Prix de vente à une faction | `sellPrice(state, id, fac)` = `round(price × PREF[fac][cat] × (1 + rep/TRADE.repPriceDiv) × TRADE.merchantMargin × catDemand × contact)` — préférence × bonus réput (±33 %) × marge 0.9 × demande conjoncturelle × amélioration Contact (1.08 si possédée) |
 | Préférences de faction | `PREF` (`src/config.js`) — multiplicateur par catégorie (ex. Liberté paie les artefacts ×1.35) |
 | Demande conjoncturelle | `catDemand(state, fac, cat)` (`src/factions.js`) : contrat de catégorie ×1.5, guerre (armes/conso pour l'agresseur) ×1.35, raid (bandits) ×1.2 |
@@ -39,5 +41,6 @@ Les constantes purement UI (achat ×5, vente « Tout » = 999, seuil de tendance
 ## Ajouter une catégorie d'item
 
 1. `CATEGORIES` + une entrée dans `PREF` **pour chaque faction** (`src/config.js`).
-2. Décider si `catDemand`/`repMult` (guerre = armes+conso) doivent la traiter → question produit, ne pas trancher seul.
-3. Tests : `test/config.test.js` (intégrité) + `test/market.test.js` si règle spécifique.
+2. Un marchand doit stocker la catégorie : nouvelle entrée `MERCHANTS` ou question produit — `test/config.test.js` échoue si une catégorie n'a pas de marchand.
+3. Décider si `catDemand`/`repMult` (guerre = armes+conso) doivent la traiter → question produit, ne pas trancher seul.
+4. Tests : `test/config.test.js` (intégrité) + `test/market.test.js` si règle spécifique.

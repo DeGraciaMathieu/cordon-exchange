@@ -20,7 +20,7 @@ Séparation stricte logique/rendu : `render/` importe `src/`, jamais l'inverse. 
 | `src/util.js` | `clamp` | — |
 | `src/reputation.js` | `shiftRep(state, fac, delta)` avec retombées alliés/rivaux | config, util |
 | `src/factions.js` | Événements de faction (guerre, contrat, blocus, raid, prime) + prédicats `marketClosed`, `zoneBlocked`, `hasBounty`, `bountyExtraDeath` + multiplicateurs `catDemand`, `repMult`, `marketCatMult` | config, rng, reputation |
-| `src/market.js` | `buyPrice`, `sellPrice`, `buy`, `sell`, `fluctuate`, `selectFaction` | config, util, factions, reputation |
+| `src/market.js` | `buyPrice`, `sellPrice`, `buy`, `sell`, `fluctuate`, `selectFaction`, `selectMerchant`, `merchantSells` | config, util, factions, reputation |
 | `src/contracts.js` | `genDeliveryOffer`, `acceptDelivery`, `deliverContract`, `tickContracts` | config, rng, factions, reputation |
 | `src/upgrades.js` | Améliorations définitives : `hasUpgrade`, `upgradeFx`, `buyUpgrade` — effets branchés dans radiation/market/factions/expeditions/stalkers | config |
 | `src/stalkers.js` | Roster : `stalkerLevel`, `isBusy`, `maxCrew`, `recruitPool`, `recruitStalker`, `selectStalker` | config, upgrades |
