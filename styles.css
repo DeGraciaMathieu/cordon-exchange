@@ -161,6 +161,12 @@ h1 span{color:var(--rust)}
 .recap .story{color:var(--gold)}
 .recap .good{color:var(--rad)} .recap .bad{color:var(--danger)}
 .recap .ev{color:var(--blue)}
+.modal .enc-result .eico{font-size:36px;margin-bottom:10px}
+.enc-result .deltas{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.enc-result .deltas span{font-family:var(--mono);font-size:12px;padding:3px 9px;
+  border:1px solid var(--line);border-radius:4px}
+.enc-result.good .deltas span{border-color:var(--rad);color:var(--rad)}
+.enc-result.bad .deltas span{border-color:var(--danger);color:var(--danger)}
 .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--panel2);
   border:1px solid var(--rust);color:var(--txt);padding:10px 18px;border-radius:6px;font-size:13px;
   opacity:0;transition:.3s;pointer-events:none;z-index:60}

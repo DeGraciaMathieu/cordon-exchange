@@ -2,9 +2,9 @@
 import { mulberry32 } from "../src/rng.js";
 import { createApp } from "../src/app.js";
 import {
-  FACTIONS, ZONES, MAX_DAY, DEBT, BOUNTY, DELIVERY, FACTION_EVENTS, RADIATION, TRAITS, itemById, stalkerById, upgradeById,
+  FACTIONS, ZONES, MAX_DAY, DEBT, BOUNTY, DELIVERY, FACTION_EVENTS, RADIATION, TRAITS, itemById, stalkerById, upgradeById, encounterById,
 } from "../src/config.js";
-import { $, fmt, log, dayLog, toast, showModal, renderAll, renderTop } from "./hud.js";
+import { $, fmt, log, dayLog, toast, showModal, showEncounterResult, renderAll, renderTop } from "./hud.js";
 import { bindInput } from "./input.js";
 
 const state = createApp({ rng: mulberry32(Date.now()) });
@@ -123,7 +123,7 @@ bus.on("upgrade:bought", ({ upgradeId }) => {
 });
 
 /* encounters */
-bus.on("encounter:resolved", ({ outcome, text, applied }) => {
+bus.on("encounter:resolved", ({ encounterId, outcome, text, applied }) => {
   const parts = [];
   if (applied.money) parts.push(`${applied.money > 0 ? "+" : "-"}${fmt(Math.abs(applied.money))}`);
   for (const id in applied.items || {}) parts.push(`${applied.items[id] > 0 ? "+" : ""}${applied.items[id]} ${itemById(id).nm}`);
@@ -131,7 +131,7 @@ bus.on("encounter:resolved", ({ outcome, text, applied }) => {
   if (applied.tip) parts.push(applied.tip === "all" ? "tuyau : tout va monter demain" : `tuyau : les prix « ${applied.tip} » montent demain`);
   const cls = outcome === "failure" ? "bad" : outcome === "success" ? "good" : "";
   log(`🤝 ${text}${parts.length ? ` <b>(${parts.join(" · ")})</b>` : ""}`, cls);
-  if (parts.length) toast(parts[0]);
+  showEncounterResult(encounterById(encounterId).ico, text, parts, cls);
 });
 
 /* game end */

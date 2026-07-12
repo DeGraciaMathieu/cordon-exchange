@@ -44,6 +44,20 @@ export function showNightRecap(day, entries) {
   $("#modal").classList.add("show");
 }
 
+// blocking encounter outcome: narrative text plus the consequences actually applied
+export function showEncounterResult(ico, text, parts, cls) {
+  $("#mTitle").textContent = "Rencontre";
+  $("#mText").innerHTML = `<div class="enc-result${cls ? " " + cls : ""}">
+    <div class="eico">${ico}</div>
+    <p>${text}</p>
+    ${parts.length ? `<div class="deltas">${parts.map(p => `<span>${p}</span>`).join("")}</div>` : ""}
+  </div>`;
+  const btn = $("#mBtn");
+  btn.textContent = "Continuer";
+  btn.onclick = () => $("#modal").classList.remove("show");
+  $("#modal").classList.add("show");
+}
+
 export function renderTop(state) {
   $("#money").textContent = fmt(state.money);
   $("#debt").textContent = fmt(state.debt);
