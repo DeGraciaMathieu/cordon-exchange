@@ -1,0 +1,9 @@
+{
+  "name": "cordon-exchange",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/",
+    "dev": "npx serve ."
+  }
+}

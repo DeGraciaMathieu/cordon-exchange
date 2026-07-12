@@ -1,0 +1,135 @@
+  :root{
+    --bg:#0d0f0c; --panel:#161a14; --panel2:#1e241b; --line:#2c3626;
+    --txt:#d7e0cf; --dim:#8a9880; --gold:#e8c46a; --rust:#c56b3a;
+    --rad:#8fd14f; --danger:#d6503c; --blue:#5a97c9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:"Courier New",monospace; background:var(--bg); color:var(--txt);
+    background-image:radial-gradient(circle at 50% -20%, #1a2016 0%, #0d0f0c 60%);
+    min-height:100vh; padding:14px; font-size:14px;
+  }
+  #game{max-width:1080px;margin:0 auto}
+  h1{font-size:20px;letter-spacing:3px;color:var(--gold);text-transform:uppercase}
+  h1 span{color:var(--rust)}
+  .sub{color:var(--dim);font-size:11px;letter-spacing:1px;margin-bottom:10px}
+
+  /* Top bar */
+  .topbar{display:flex;flex-wrap:wrap;gap:10px;background:var(--panel);border:1px solid var(--line);
+    border-radius:8px;padding:10px 14px;margin-bottom:12px;align-items:center}
+  .stat{display:flex;flex-direction:column;line-height:1.2}
+  .stat b{font-size:16px;color:var(--gold)}
+  .stat small{color:var(--dim);font-size:10px;text-transform:uppercase;letter-spacing:1px}
+  .stat.debt b{color:var(--danger)}
+  .stat.day b{color:var(--rad)}
+  .spacer{flex:1}
+
+  /* Reputation */
+  .reps{display:flex;gap:8px;flex-wrap:wrap}
+  .rep{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:5px 8px;min-width:96px}
+  .rep .name{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--dim);display:flex;justify-content:space-between}
+  .rep .bar{height:6px;background:#000;border-radius:3px;margin-top:4px;overflow:hidden;position:relative}
+  .rep .bar i{position:absolute;top:0;bottom:0;left:50%;width:2px;background:#444}
+  .rep .fill{height:100%;transition:.3s}
+
+  /* Tabs */
+  .tabs{display:flex;gap:6px;margin-bottom:12px;flex-wrap:wrap}
+  .tab{background:var(--panel);border:1px solid var(--line);color:var(--dim);padding:8px 14px;
+    border-radius:6px;cursor:pointer;letter-spacing:1px;font-size:12px;text-transform:uppercase;font-family:inherit}
+  .tab:hover{color:var(--txt)}
+  .tab.active{background:var(--panel2);color:var(--gold);border-color:var(--rust)}
+
+  .view{display:none}
+  .view.active{display:block}
+
+  /* Cards */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(158px,1fr));gap:10px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px;
+    display:flex;flex-direction:column;gap:6px;position:relative;transition:.15s}
+  .card:hover{border-color:var(--rust);transform:translateY(-2px)}
+  .card .ico{font-size:30px;text-align:center;filter:drop-shadow(0 0 6px rgba(143,209,79,.25))}
+  .card.gear .ico{filter:drop-shadow(0 0 6px rgba(90,151,201,.25))}
+  .card .nm{font-weight:bold;font-size:13px;text-align:center;line-height:1.1}
+  .card .rad{font-size:10px;color:var(--danger);text-align:center}
+  .card .price{text-align:center;font-size:15px;color:var(--gold)}
+  .card .trend{font-size:10px;text-align:center}
+  .up{color:var(--danger)} .down{color:var(--rad)}
+  .card .qty{position:absolute;top:6px;right:8px;background:#000;border:1px solid var(--line);
+    border-radius:10px;padding:1px 7px;font-size:11px;color:var(--rad)}
+  .btn{background:var(--panel2);border:1px solid var(--line);color:var(--txt);padding:6px;
+    border-radius:5px;cursor:pointer;font-family:inherit;font-size:12px;transition:.15s}
+  .btn:hover:not(:disabled){background:var(--rust);color:#000;border-color:var(--rust)}
+  .btn:disabled{opacity:.35;cursor:not-allowed}
+  .btn.sm{padding:4px;font-size:11px}
+  .btn.big{padding:12px;font-size:14px;letter-spacing:2px;text-transform:uppercase}
+  .row{display:flex;gap:6px}
+  .row .btn{flex:1}
+
+  /* Faction sell panel */
+  .factionbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+  .fbtn{flex:1;min-width:120px;background:var(--panel);border:1px solid var(--line);border-radius:6px;
+    padding:8px;cursor:pointer;text-align:center;font-family:inherit;color:var(--txt)}
+  .fbtn.active{border-color:var(--gold)}
+  .fbtn b{display:block;letter-spacing:1px}
+  .fbtn small{color:var(--dim);font-size:10px}
+  .fbtn:disabled{opacity:.4;cursor:not-allowed}
+  .fbtn.closed{border-color:var(--danger)}
+
+  /* Faction events banner */
+  .facEvents{display:none;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .facev{background:var(--panel);border:1px solid var(--line);border-left-width:3px;border-radius:6px;
+    padding:6px 11px;font-size:12px;display:flex;gap:12px;align-items:center;animation:pulse 2.4s infinite}
+  .facev b{color:var(--gold)}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 rgba(197,107,58,0)}50%{box-shadow:0 0 10px rgba(197,107,58,.25)}}
+
+  /* Expeditions */
+  .zone{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px;margin-bottom:10px}
+  .zone h3{color:var(--gold);letter-spacing:1px;margin-bottom:4px;display:flex;justify-content:space-between}
+  .zone p{color:var(--dim);font-size:12px;margin-bottom:8px}
+  .risk{font-size:11px}
+  .active-exp{background:var(--panel2);border:1px dashed var(--rust);border-radius:6px;padding:8px;margin-bottom:8px;font-size:12px}
+
+  /* Contracts */
+  .sect{color:var(--gold);letter-spacing:2px;text-transform:uppercase;font-size:12px;
+    margin:14px 0 8px;border-bottom:1px solid var(--line);padding-bottom:4px}
+  .contract{background:var(--panel);border:1px solid var(--line);border-left:3px solid var(--rust);
+    border-radius:8px;padding:12px;margin-bottom:10px;display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+  .contract .ci{font-size:28px}
+  .contract .cinfo{flex:1;min-width:160px}
+  .contract .cinfo b{color:var(--txt)}
+  .contract .cinfo small{display:block;color:var(--dim);font-size:11px;margin-top:2px}
+  .contract .reward{color:var(--gold);font-size:15px;text-align:right;min-width:90px}
+  .contract .cact{display:flex;flex-direction:column;gap:4px;min-width:130px}
+  .prog{height:6px;background:#000;border-radius:3px;overflow:hidden;margin-top:6px}
+  .prog i{display:block;height:100%;background:var(--rad)}
+  .threat{background:#1a1210;border:1px solid var(--danger);border-radius:8px;padding:12px;margin-bottom:10px}
+  .threat h4{color:var(--danger);letter-spacing:1px;margin-bottom:6px}
+  .threat p{color:var(--dim);font-size:12px;margin-bottom:8px;line-height:1.5}
+  .badge{background:var(--rust);color:#000;border-radius:9px;padding:0 6px;font-size:10px;font-weight:bold}
+  .empty{color:var(--dim);font-size:12px;padding:6px 0}
+
+  /* Journal */
+  #log{background:#000;border:1px solid var(--line);border-radius:8px;padding:12px;height:340px;
+    overflow-y:auto;font-size:12px;line-height:1.55}
+  #log .e{margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid #161a14}
+  #log .day{color:var(--rad);font-weight:bold}
+  #log .story{color:var(--gold)}
+  #log .good{color:var(--rad)} #log .bad{color:var(--danger)}
+  #log .ev{color:var(--blue)}
+
+  .foot{margin-top:14px;display:flex;gap:10px;align-items:center}
+  .hint{color:var(--dim);font-size:11px}
+
+  /* Modal */
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;
+    justify-content:center;padding:20px;z-index:50}
+  .modal.show{display:flex}
+  .modal .box{background:var(--panel);border:1px solid var(--rust);border-radius:10px;padding:26px;
+    max-width:520px;text-align:center}
+  .modal h2{color:var(--gold);letter-spacing:2px;margin-bottom:12px}
+  .modal p{color:var(--txt);line-height:1.6;margin-bottom:10px}
+  .toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--panel2);
+    border:1px solid var(--rust);color:var(--txt);padding:10px 18px;border-radius:6px;font-size:13px;
+    opacity:0;transition:.3s;pointer-events:none;z-index:60}
+  .toast.show{opacity:1}
+  @media(max-width:600px){.stat b{font-size:14px}.grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}}
