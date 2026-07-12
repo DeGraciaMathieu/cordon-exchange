@@ -1,6 +1,6 @@
 // All DOM rendering: top bar, grids, contracts, expeditions, journal, toast, modal.
 import { FACTIONS, PREF, ITEMS, ZONES, MAX_DAY, EXPEDITIONS, FACTION_EVENTS, HAGGLE, itemById, encounterById } from "../src/config.js";
-import { buyPrice, sellPrice } from "../src/market.js";
+import { buyPrice, sellPrice, isUndervalued } from "../src/market.js";
 import { marketClosed, zoneBlocked, bountyExtraDeath } from "../src/factions.js";
 import { canPick } from "../src/encounters.js";
 
@@ -44,6 +44,23 @@ export function renderTop(state) {
   }
 }
 
+// tiny price-history chart; the dashed line marks the base (reference) price
+function sparkline(history, base) {
+  const w = 60, h = 18;
+  const values = history.length > 1 ? history : [history[0], history[0]];
+  const min = Math.min(...values, base), max = Math.max(...values, base);
+  const span = max - min || 1;
+  const x = i => (1 + (i / (values.length - 1)) * (w - 2)).toFixed(1);
+  const y = v => (h - 2 - ((v - min) / span) * (h - 4)).toFixed(1);
+  const pts = values.map((v, i) => `${x(i)},${y(v)}`).join(" ");
+  const last = values[values.length - 1];
+  const col = last > base ? "var(--danger)" : last < base ? "var(--rad)" : "var(--dim)";
+  return `<svg class="spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none">
+    <line x1="0" y1="${y(base)}" x2="${w}" y2="${y(base)}" stroke="#3a4433" stroke-dasharray="2 2"/>
+    <polyline points="${pts}" fill="none" stroke="${col}" stroke-width="1.5"/>
+  </svg>`;
+}
+
 function trendMark(state, id) {
   const it = itemById(id);
   const p = Math.round((state.price[id] - it.base) / it.base * 100);
@@ -59,13 +76,16 @@ export function renderMarket(state) {
     const bp = buyPrice(state, it.id);
     const canBuy = state.money >= bp && !state.over;
     const q = state.inv[it.id];
-    g.innerHTML += `<div class="card ${it.cat === "artefact" ? "" : "gear"}">
+    const deal = isUndervalued(state, it.id);
+    g.innerHTML += `<div class="card ${it.cat === "artefact" ? "" : "gear"}${deal ? " deal" : ""}">
       ${q ? `<span class="qty">×${q}</span>` : ""}
       <div class="ico">${it.ico}</div>
       <div class="nm">${it.nm}</div>
       ${it.rad ? `<div class="rad">☢ rad ${it.rad}</div>` : `<div class="rad" style="color:var(--dim)">${it.cat}</div>`}
       <div class="price">${fmt(bp)}</div>
       ${trendMark(state, it.id)}
+      ${sparkline(state.history[it.id], it.base)}
+      ${deal ? `<div class="deal-tag">💰 sous-évalué</div>` : ""}
       <div class="row">
         <button class="btn sm" ${canBuy ? "" : "disabled"} data-act="buy" data-id="${it.id}" data-n="1">Acheter</button>
         <button class="btn sm" ${state.money >= bp * 5 && !state.over ? "" : "disabled"} data-act="buy" data-id="${it.id}" data-n="5">×5</button>
@@ -106,6 +126,7 @@ export function renderSell(state) {
       <div class="rad" style="color:var(--dim)">${it.cat}</div>
       <div class="price">${fmt(sp)}</div>
       <div class="trend ${profit >= 0 ? "down" : "up"}">${profit >= 0 ? "gain" : "perte"} ${fmt(Math.abs(profit))}</div>
+      ${sparkline(state.history[it.id], it.base)}
       <div class="row">
         <button class="btn sm" ${state.over ? "disabled" : ""} data-act="sell" data-id="${it.id}" data-n="1">Vendre</button>
         <button class="btn sm" ${state.inv[it.id] >= 5 && !state.over ? "" : "disabled"} data-act="sell" data-id="${it.id}" data-n="999">Tout</button>

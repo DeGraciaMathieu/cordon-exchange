@@ -88,5 +88,13 @@ export function fluctuate(state, ev) {
       Math.round(it.base * MARKET.minMult),
       Math.round(it.base * MARKET.maxMult),
     );
+    const h = state.history[it.id];
+    h.push(state.price[it.id]);
+    if (h.length > MARKET.historyLen) h.shift();
   });
+}
+
+// buy signal: the mean pull makes base the anchor, so buying well under it is statistically a deal
+export function isUndervalued(state, id) {
+  return state.price[id] <= itemById(id).base * MARKET.undervaluedAt;
 }

@@ -20,6 +20,7 @@ export function createApp({ rng }) {
     debt: DEBT.start,
     rep: { ...START.rep },
     price: {},
+    history: {},
     inv: {},
     exps: [],
     factionEvents: [],
@@ -32,7 +33,7 @@ export function createApp({ rng }) {
     encounter: null,
     marketTip: null,
   };
-  ITEMS.forEach(i => { state.price[i.id] = i.base; state.inv[i.id] = 0; });
+  ITEMS.forEach(i => { state.price[i.id] = i.base; state.history[i.id] = [i.base]; state.inv[i.id] = 0; });
   Object.assign(state.inv, START.inv);
   drawEncounter(state); // day 1 gets its card too
   return state;

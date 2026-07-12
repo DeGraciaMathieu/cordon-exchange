@@ -179,9 +179,11 @@ export const HAGGLE = {
 };
 
 export const MARKET = {
-  meanPull: 0.15, // daily pull back toward the base price
-  minMult: 0.4,   // price floor relative to base
-  maxMult: 2.2,   // price ceiling relative to base
+  meanPull: 0.15,      // daily pull back toward the base price
+  minMult: 0.4,        // price floor relative to base
+  maxMult: 2.2,        // price ceiling relative to base
+  historyLen: 10,      // days of price history kept per item (sparkline window)
+  undervaluedAt: 0.85, // price at or below base × this = "undervalued" buy signal
 };
 
 export const REP = { min: -100, max: 100, allySpill: 0.4, rivalSpill: 0.6 };
