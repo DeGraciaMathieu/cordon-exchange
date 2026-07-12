@@ -21,6 +21,9 @@ auto_invoke: true
 | Gain de réputation à la vente | `saleRepGain` (helper partagé `sell`/`haggle`) : `TRADE.repGainBase (3) + round(count × 1.5 si artefact)` ; ×0.7 pour les bandits ; × `repMult` (contrat ×2, guerre ×1.6) → `shiftRep` |
 | Soutien de guerre | vendre armes/conso à l'agresseur incrémente `war.support` de `count` (dans `saleRepGain`, donc aussi via un marchandage réussi) |
 | Fluctuations quotidiennes | `fluctuate(state, ev)` : bruit `±vol` (par item), rappel vers `base` (`MARKET.meanPull` 0.15), multiplicateur d'événement, biais de guerre (`marketCatMult`), clamp `[0.4×base, 2.2×base]` |
+| Historique de prix | `state.history[id]` (init `[base]` dans `createApp`) — alimenté par `fluctuate`, fenêtre glissante de `MARKET.historyLen` (10) jours |
+| Signal « sous-évalué » | `isUndervalued(state, id)` (`src/market.js`) : `price ≤ base × MARKET.undervaluedAt` (0.85) — badge 💰 + bordure dorée sur la carte marché |
+| Sparkline | `sparkline(history, base)` (`render/hud.js`) : SVG inline sur les cartes marché **et** vente, pointillé = prix de référence, couleur selon la position vs base |
 | Faction de vente sélectionnée | `state.sellFaction` via `selectFaction(state, fac)` |
 | Constantes | groupes `TRADE` et `MARKET` — `src/config.js` |
 
