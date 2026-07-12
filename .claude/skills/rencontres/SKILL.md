@@ -17,7 +17,7 @@ Chaque jour, une carte-événement propose 2-3 options ; l'occasion disparaît l
 | Conditions (`needs`) | `{money: n}` et/ou `{items: {id: n}}` — vérifiées par `canPick(state, opt)` (`src/encounters.js`), consommé par `render/hud.js` pour désactiver le bouton **et** revérifié dans `chooseEncounter` |
 | Effets (`effects` / `risk.success` / `risk.failure`) | `money` (± ; pertes bornées au cash disponible), `items {id: ±n}` (bornés au stock), `rep {fac: ±n}` (via `shiftRep`, retombées incluses), `tip: true` (tuyau marché), `t` (texte de journal) |
 | Risque | `risk: {p, success, failure}` — `state.rng() < p` → succès. Le texte du journal vient de l'issue tirée |
-| Tirage quotidien | `drawEncounter(state)` — appelé dans `createApp` (jour 1) et dans `nextDay` (étape 13) ; la carte courante n'est jamais retirée deux fois de suite |
+| Tirage quotidien | `drawEncounter(state)` — appelé chaque jour dans `nextDay` ; **pas de rencontre le jour 1** ; la carte courante n'est jamais retirée deux fois de suite |
 | État | `state.encounter` (`{id}` ou `null` une fois jouée) et `state.marketTip` (index dans `MARKET_EVENTS` ou `null`) — défauts dans `createApp` |
 | Tuyau marché (`tip`) | tire un `MARKET_EVENTS` haussier (`mult > 1`), arme `state.marketTip` ; `nextDay` force cet événement le lendemain puis le remet à `null` |
 | Résolution | `chooseEncounter(state, optionId)` → applique les effets, émet `encounter:resolved {encounterId, optionId, outcome, text, applied}` |

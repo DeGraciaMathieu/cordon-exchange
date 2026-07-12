@@ -18,7 +18,7 @@ auto_invoke: true
 | Fin de partie | `endGame` (interne) : `state.over = true` + `game:ended {win, reason, day, money, debt}`. Victoire = dette soldée ; défaites : `reason: "deadline"` (`day > MAX_DAY` 24) ou `reason: "rads"` (jauge à `RADIATION.deathAt`) |
 | Radiations | `state.rads` (0 à `RADIATION.deathAt` 100) ; `tickRadiation` (`src/radiation.js`) : dose nocturne = Σ `rad × qty` des artefacts en stock (`radsDose`, ÷2 avec la Caisse plombée) ; sans artefact, récupération de `decay` (8)/nuit ; à `sickAt` (60), frais de soins nocturnes `rads × sickCostPerRad` (5 ₽) ; événements `rads:changed` / `rads:sickened` |
 | Événement de marché du jour | tiré dans `MARKET_EVENTS` (config) — **forcé par `state.marketTip` si armé** (tuyau de rencontre, consommé après usage) → `market:shifted {ev}` → `fluctuate(state, ev)` |
-| Rencontre du jour | `state.encounter` `{id}` tiré par `drawEncounter` (`src/encounters.js`) — dans `createApp` (jour 1) puis chaque jour dans `nextDay` ; la carte non jouée est remplacée (voir skill `rencontres`) |
+| Rencontre du jour | `state.encounter` `{id}` tiré par `drawEncounter` (`src/encounters.js`) — chaque jour dans `nextDay` ; **aucune rencontre le jour 1** (`createApp` laisse `encounter: null`) ; la carte non jouée est remplacée (voir skill `rencontres`) |
 
 ## Ordre exact de `nextDay` (ne pas réordonner sans raison)
 
