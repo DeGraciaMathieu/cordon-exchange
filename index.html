@@ -25,15 +25,15 @@
   <div id="encounter"></div>
 
   <div class="tabs">
-    <button class="tab active" data-v="market">Marché</button>
+    <button class="tab" data-v="market">Marché</button>
     <button class="tab" data-v="sell">Vendre aux factions</button>
     <button class="tab" data-v="contracts">Contrats <span id="contractBadge"></span></button>
     <button class="tab" data-v="exp">Expéditions</button>
     <button class="tab" data-v="upgrades">Améliorations</button>
-    <button class="tab" data-v="journal">Journal</button>
+    <button class="tab active" data-v="journal">Journal</button>
   </div>
 
-  <div class="view active" id="v-market">
+  <div class="view" id="v-market">
     <div class="factionbar" id="merchantbar"></div>
     <details class="help"><summary>Aide</summary>
       <div class="hint">Trois marchands se partagent le comptoir, chacun ne vend que sa spécialité : artefacts chez le savant, armes chez l'armurier, vivres au cantinier. Achète bas, revends haut : les prix bougent chaque jour selon la Zone. Au survol d'une carte, la courbe montre les derniers jours et le pointillé le prix de référence. 💰 sous-évalué = nettement sous la référence.</div>
@@ -81,7 +81,7 @@
     <div class="grid" id="upgradesGrid"></div>
   </div>
 
-  <div class="view" id="v-journal">
+  <div class="view active" id="v-journal">
     <details class="help"><summary>Aide</summary>
       <div class="hint">Le plus récent est en haut ; chaque « Jour N » ouvre les événements de ce jour-là. Couleurs : <span style="color:var(--rad)">vert = bonne nouvelle</span>, <span style="color:var(--danger)">rouge = coup dur</span>, <span style="color:var(--blue)">bleu = la Zone bouge</span>, <span style="color:var(--gold)">or = message du Fixeur</span>.</div>
     </details>
