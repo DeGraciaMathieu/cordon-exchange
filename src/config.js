@@ -53,7 +53,40 @@ export const ZONES = [
   { id: "pripyat", nm: "Pripiat",     desc: "Le cœur de la Zone. Fortune ou linceul.",                  fee: 2800, days: 3, death: .40, loot: ["soul", "crystal", "moon"], qty: [1, 3] },
 ];
 export const EXPEDITIONS = { maxActive: 2 };
-export const STALKER_NAMES = ["Loup", "Chèque", "Renard", "Sidorovitch Jr", "Trapper", "Cardan", "Fanatic", "Pilote", "Vano", "Poker"];
+
+// named stalkers: a persistent roster with traits, levels and permadeath
+export const STALKERS = [
+  { id: "wolf",    name: "Loup",           trait: "veteran" },
+  { id: "poker",   name: "Poker",          trait: "scavenger" },
+  { id: "fox",     name: "Renard",         trait: "runner" },
+  { id: "check",   name: "Chèque",         trait: "scavenger" },
+  { id: "sido",    name: "Sidorovitch Jr", trait: "veteran" },
+  { id: "trapper", name: "Trapper",        trait: "veteran" },
+  { id: "cardan",  name: "Cardan",         trait: "runner" },
+  { id: "fanatic", name: "Fanatic",        trait: "scavenger" },
+  { id: "pilot",   name: "Pilote",         trait: "runner" },
+  { id: "vano",    name: "Vano",           trait: "veteran" },
+];
+export const stalkerById = id => STALKERS.find(s => s.id === id);
+
+export const TRAITS = {
+  veteran:   { nm: "Vétéran",   ico: "🛡️", desc: "risque de perte réduit" },
+  scavenger: { nm: "Fouineur",  ico: "🎒", desc: "un objet de butin en plus" },
+  runner:    { nm: "Éclaireur", ico: "🥾", desc: "revient un jour plus tôt" },
+};
+
+export const ROSTER = {
+  start: ["wolf", "poker"], // hired from day 1
+  maxHired: 4,
+  hireCost: 800,
+  xpPerLevel: 2,      // xp gained: 1 per surviving expedition
+  maxLevel: 5,
+  deathPerLevel: 0.03, // death chance shaved per level above 1
+  veteranMult: 0.7,
+  scavengerBonus: 1,
+  runnerDaysOff: 1,
+  minDeath: 0.02,      // the Zone never forgives entirely
+};
 
 // daily market events (t = journal text shown to the player)
 export const MARKET_EVENTS = [

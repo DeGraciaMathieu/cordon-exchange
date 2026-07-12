@@ -5,7 +5,8 @@ import { launchExp } from "../src/expeditions.js";
 import { acceptDelivery, deliverContract } from "../src/contracts.js";
 import { payRansom } from "../src/factions.js";
 import { chooseEncounter } from "../src/encounters.js";
-import { $, renderAll, renderSell } from "./hud.js";
+import { recruitStalker, selectStalker } from "../src/stalkers.js";
+import { $, renderAll, renderSell, renderExp } from "./hud.js";
 
 export function bindInput(state) {
   document.querySelectorAll(".tab").forEach(t => {
@@ -28,6 +29,7 @@ export function bindInput(state) {
     if (!btn) return;
     const { act, id, n } = btn.dataset;
     if (act === "faction") { selectFaction(state, id); renderSell(state); return; }
+    if (act === "stalker") { selectStalker(state, id); renderExp(state); return; }
     if (act === "buy") buy(state, id, +n);
     else if (act === "sell") sell(state, id, +n);
     else if (act === "haggle") haggle(state, id);
@@ -36,6 +38,7 @@ export function bindInput(state) {
     else if (act === "deliver") deliverContract(state, +id);
     else if (act === "ransom") payRansom(state, id);
     else if (act === "encounter") chooseEncounter(state, id);
+    else if (act === "recruit") recruitStalker(state, id);
     else return;
     renderAll(state);
   });

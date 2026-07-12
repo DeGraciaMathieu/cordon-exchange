@@ -1,9 +1,11 @@
 // All DOM rendering: top bar, grids, contracts, expeditions, journal, toast, modal.
-import { FACTIONS, PREF, ITEMS, ZONES, MAX_DAY, EXPEDITIONS, FACTION_EVENTS, HAGGLE, RADIATION, itemById, encounterById } from "../src/config.js";
+import { FACTIONS, PREF, ITEMS, ZONES, MAX_DAY, EXPEDITIONS, FACTION_EVENTS, HAGGLE, RADIATION, TRAITS, ROSTER, itemById, encounterById, stalkerById } from "../src/config.js";
 import { buyPrice, sellPrice, isUndervalued } from "../src/market.js";
 import { marketClosed, zoneBlocked, bountyExtraDeath } from "../src/factions.js";
 import { canPick } from "../src/encounters.js";
 import { radsDose } from "../src/radiation.js";
+import { deathChance } from "../src/expeditions.js";
+import { stalkerLevel, isBusy, recruitPool } from "../src/stalkers.js";
 
 export const $ = s => document.querySelector(s);
 export const fmt = n => Math.round(n).toLocaleString("fr-FR") + " ₽";
@@ -150,25 +152,50 @@ export function renderExp(state) {
   }
   state.exps.forEach(e => {
     const z = ZONES.find(z => z.id === e.zone);
-    a.innerHTML += `<div class="active-exp">🥾 <b>${e.name}</b> en mission à <b>${z.nm}</b> — retour dans ${e.left} jour(s)</div>`;
+    a.innerHTML += `<div class="active-exp">🥾 <b>${stalkerById(e.stalkerId).name}</b> en mission à <b>${z.nm}</b> — retour dans ${e.left} jour(s)</div>`;
   });
+
+  // roster: pick who goes out next
+  $("#roster").innerHTML = state.stalkers.length ? state.stalkers.map(s => {
+    const def = stalkerById(s.id), t = TRAITS[def.trait];
+    const busy = isBusy(state, s.id);
+    return `<button class="fbtn ${state.activeStalker === s.id ? "active" : ""}" ${busy || state.over ? "disabled" : ""} data-act="stalker" data-id="${s.id}">
+      <b>${t.ico} ${def.name}</b>
+      <small>${t.nm} · niv. ${stalkerLevel(s.xp)}${busy ? " · en mission" : ""}</small></button>`;
+  }).join("") : `<div class="empty">Plus un seul stalker sous ta bannière. Recrute, ou la Zone restera muette.</div>`;
+
+  const rec = state.stalkers.find(s => s.id === state.activeStalker);
+  const idle = rec && !isBusy(state, rec.id);
   const zc = $("#zones");
   zc.innerHTML = "";
   ZONES.forEach(z => {
-    const busy = state.exps.length >= EXPEDITIONS.maxActive;
+    const busyAll = state.exps.length >= EXPEDITIONS.maxActive;
     const blocked = zoneBlocked(state, z.id);
-    const canGo = state.money >= z.fee && !busy && !blocked && !state.over;
-    const rk = z.death < .1 ? "faible" : z.death < .2 ? "modéré" : z.death < .35 ? "élevé" : "mortel";
-    const rkcol = z.death < .1 ? "var(--rad)" : z.death < .2 ? "var(--gold)" : z.death < .35 ? "var(--rust)" : "var(--danger)";
-    const label = blocked ? "🚧 Zone sous blocus" : busy ? `${EXPEDITIONS.maxActive} expéditions max en cours` : "Envoyer un stalker";
+    const canGo = state.money >= z.fee && !busyAll && !blocked && !state.over && idle;
+    const d = rec ? deathChance(state, rec.id, z) : z.death + extra;
+    const rk = d < .1 ? "faible" : d < .2 ? "modéré" : d < .35 ? "élevé" : "mortel";
+    const rkcol = d < .1 ? "var(--rad)" : d < .2 ? "var(--gold)" : d < .35 ? "var(--rust)" : "var(--danger)";
+    const label = blocked ? "🚧 Zone sous blocus" : busyAll ? `${EXPEDITIONS.maxActive} expéditions max en cours`
+      : !idle ? "Aucun stalker disponible" : `Envoyer ${stalkerById(rec.id).name}`;
     zc.innerHTML += `<div class="zone" ${blocked ? 'style="opacity:.55"' : ""}>
       <h3>${z.nm} <span style="color:var(--gold)">${fmt(z.fee)}</span></h3>
       <p>${z.desc}</p>
-      <div class="risk">Risque : <b style="color:${rkcol}">${rk}</b> (${Math.round(z.death * 100)}% de perte) · retour en ${z.days} j · butin possible : ${z.loot.map(l => itemById(l).ico).join(" ")}</div>
+      <div class="risk">Risque${rec ? ` pour ${stalkerById(rec.id).name}` : ""} : <b style="color:${rkcol}">${rk}</b> (${Math.round(d * 100)}% de perte) · retour en ${z.days} j · butin possible : ${z.loot.map(l => itemById(l).ico).join(" ")}</div>
       <button class="btn" style="margin-top:8px;width:100%" ${canGo ? "" : "disabled"} data-act="expedition" data-id="${z.id}">
         ${label}</button>
     </div>`;
   });
+
+  // recruits waiting at the camp
+  const pool = recruitPool(state);
+  const full = state.stalkers.length >= ROSTER.maxHired;
+  $("#recruits").innerHTML = pool.length ? pool.map(def => {
+    const t = TRAITS[def.trait];
+    const can = state.money >= ROSTER.hireCost && !full && !state.over;
+    return `<button class="fbtn" ${can ? "" : "disabled"} data-act="recruit" data-id="${def.id}">
+      <b>${t.ico} ${def.name}</b>
+      <small>${t.nm} (${t.desc}) · ${fmt(ROSTER.hireCost)}</small></button>`;
+  }).join("") : `<div class="empty">Plus personne à recruter au campement.</div>`;
 }
 
 export function renderEncounter(state) {

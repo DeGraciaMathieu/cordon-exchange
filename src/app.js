@@ -3,7 +3,7 @@ import { createBus } from "./events.js";
 import { pick } from "./rng.js";
 import {
   ITEMS, MAX_DAY, START, DEBT, STORY_BEATS, MARKET_EVENTS,
-  FACTION_EVENTS, DELIVERY,
+  FACTION_EVENTS, DELIVERY, ROSTER,
 } from "./config.js";
 import { fluctuate } from "./market.js";
 import { spawnFactionEvent, tickFactionEvents, checkBounty } from "./factions.js";
@@ -34,6 +34,9 @@ export function createApp({ rng }) {
     encounter: null,
     marketTip: null,
     rads: 0,
+    stalkers: ROSTER.start.map(id => ({ id, xp: 0 })),
+    activeStalker: ROSTER.start[0],
+    fallen: [],
   };
   ITEMS.forEach(i => { state.price[i.id] = i.base; state.history[i.id] = [i.base]; state.inv[i.id] = 0; });
   Object.assign(state.inv, START.inv);

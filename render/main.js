@@ -2,7 +2,7 @@
 import { mulberry32 } from "../src/rng.js";
 import { createApp } from "../src/app.js";
 import {
-  FACTIONS, ZONES, MAX_DAY, DEBT, BOUNTY, DELIVERY, FACTION_EVENTS, RADIATION, itemById,
+  FACTIONS, ZONES, MAX_DAY, DEBT, BOUNTY, DELIVERY, FACTION_EVENTS, RADIATION, TRAITS, itemById, stalkerById,
 } from "../src/config.js";
 import { $, fmt, log, dayLog, toast, showModal, renderAll, renderTop } from "./hud.js";
 import { bindInput } from "./input.js";
@@ -92,16 +92,27 @@ bus.on("contract:blocked", ({ contract }) => toast(`Aucun ${itemById(contract.it
 bus.on("contract:failed", ({ contract }) =>
   log(`❌ Contrat échoué : les ${facName(contract.fac)} n'ont pas eu leurs ${contract.qty}× ${itemById(contract.itemId).nm} (${contract.delivered} livré(s), perdus). Réputation ${DELIVERY.failRep}.`, "bad"));
 
-/* expeditions */
-bus.on("expedition:launched", ({ zoneId, name, fee }) => {
-  log(`Tu paies <b>${fmt(fee)}</b> à <b>${name}</b> pour fouiller <b>${zoneName(zoneId)}</b>.`);
-  toast(`${name} part pour ${zoneName(zoneId)}`);
+/* expeditions & roster */
+const stalkerName = id => stalkerById(id).name;
+bus.on("expedition:launched", ({ zoneId, stalkerId, fee }) => {
+  log(`Tu paies <b>${fmt(fee)}</b> à <b>${stalkerName(stalkerId)}</b> pour fouiller <b>${zoneName(zoneId)}</b>.`);
+  toast(`${stalkerName(stalkerId)} part pour ${zoneName(zoneId)}`);
 });
-bus.on("expedition:lost", ({ zoneId, name }) =>
-  log(`💀 <b>${name}</b> n'est jamais revenu de <b>${zoneName(zoneId)}</b>. Fouille perdue.`, "bad"));
-bus.on("expedition:returned", ({ zoneId, name, loot }) => {
+bus.on("expedition:lost", ({ zoneId, stalkerId, level }) => {
+  const def = stalkerById(stalkerId);
+  log(`💀 <b>${def.name}</b> (${TRAITS[def.trait].nm}, niv. ${level}) n'est jamais revenu de <b>${zoneName(zoneId)}</b>. La Zone garde les siens.`, "bad");
+  toast(`${def.name} est mort`);
+});
+bus.on("expedition:returned", ({ zoneId, stalkerId, loot }) => {
   const txt = Object.entries(loot).map(([id, c]) => `${c}× ${itemById(id).nm}`).join(", ");
-  log(`🎒 <b>${name}</b> revient de <b>${zoneName(zoneId)}</b> avec : <b class="good">${txt}</b>.`, "good");
+  log(`🎒 <b>${stalkerName(stalkerId)}</b> revient de <b>${zoneName(zoneId)}</b> avec : <b class="good">${txt}</b>.`, "good");
+});
+bus.on("stalker:promoted", ({ stalkerId, level }) =>
+  log(`⭐ <b>${stalkerName(stalkerId)}</b> passe au niveau ${level} : la Zone a moins de prise sur lui.`, "good"));
+bus.on("stalker:recruited", ({ stalkerId }) => {
+  const def = stalkerById(stalkerId);
+  log(`🤝 <b>${def.name}</b> rejoint ton équipe — ${TRAITS[def.trait].nm} : ${TRAITS[def.trait].desc}.`);
+  toast(`${def.name} recruté`);
 });
 
 /* encounters */
