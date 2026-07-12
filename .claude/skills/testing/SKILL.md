@@ -37,6 +37,7 @@ Zéro mock : `src/` s'importe tel quel dans Node. Pas d'assertion sur des détai
 | `test/contracts.test.js` | Cycle offre → acceptation → livraison, livraison partielle, échéance ratée, expiration des offres |
 | `test/expeditions.test.js` | Coût du lancement, retour avec butin, expédition perdue |
 | `test/encounters.test.js` | Tirage quotidien, effets d'option, needs non remplis, risque succès/échec, tuyau marché |
+| `test/radiation.test.js` | Dose nocturne des artefacts, récupération, mal des rads (frais), mort par radiations, revente qui stoppe l'irradiation |
 | `test/reputation.test.js` | Retombées alliés/rivaux, clamp ±100 |
 | `test/rng.test.js` | Déterminisme, bornes [0,1), `pick`/`randInt` |
 | `test/events.test.js` | Bus : ordre de livraison, émission sans abonné |

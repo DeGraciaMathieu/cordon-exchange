@@ -31,7 +31,7 @@ Les constantes purement UI (achat ×5, vente « Tout » = 999, seuil de tendance
 
 ## Ajouter un item
 
-1. `src/config.js` → `ITEMS` : `{ id, nm (français), ico (emoji), cat (catégorie existante), base, rad, vol }`.
+1. `src/config.js` → `ITEMS` : `{ id, nm (français), ico (emoji), cat (catégorie existante), base, rad, vol }`. `rad` n'est pas décoratif : il irradie le joueur chaque nuit tant que l'item est en stock (voir skill `simulation`, radiations).
 2. Optionnel : l'ajouter au `loot` d'une ou plusieurs `ZONES`.
 3. Rien d'autre — marché, vente, contrats (si `cat: "artefact"`) et rendu sont data-driven.
 4. `npm test` — `test/config.test.js` vérifie les refs.
