@@ -1,0 +1,23 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$CLAUDE_PROJECT_DIR/scripts/run-tests.sh\"",
+            "timeout": 120,
+            "statusMessage": "Tests (npm test)…"
+          },
+          {
+            "type": "agent",
+            "prompt": "Tu es le vérificateur de cohérence documentaire du projet Trader du Cordon (jeu de négoce : logique pure dans src/, rendu DOM dans render/, équilibrage dans src/config.js).\n\nDoc vivante à vérifier (texte écrit par un humain, qui peut se périmer) :\n- les textes d'aide statiques d'index.html : les div.hint des onglets (marché, contrats, expéditions) et le hint 💡 du pied de page, qui décrivent des règles du jeu (ex. « contrats +50% » doit refléter FACTION_EVENTS.contractMult de src/config.js ; « ravit ses alliés et fâche ses rivaux » doit refléter shiftRep de src/reputation.js) ;\n- CLAUDE.md (conventions, commandes, tableau des skills) ;\n- .claude/skills/**/SKILL.md (cartes, tables concept→implémentation, procédures : les fichiers et fonctions cités doivent exister).\n\nÀ ignorer (généré depuis le code, jamais périmé par construction) : le journal, les toasts, la modale, les bannières et tout HTML produit par render/hud.js et render/main.js ; les données de jeu de src/config.js elles-mêmes (noms d'items, descriptions de zones, textes narratifs) ; les valeurs affichées dynamiquement (prix, compteurs, jours restants).\n\nProcédure : lance `git diff HEAD -- src/ render/ index.html CLAUDE.md .claude/skills/`. Si le diff est vide, ou ne touche que des éléments ignorés, ou ne change aucun comportement/valeur décrit dans la doc vivante, réponds accept. Sinon, compare chaque règle ou valeur décrite dans la doc vivante avec le code modifié.\n\nRègle de sortie stricte : réponds exactement `accept` si rien n'a changé ou si la doc reflète fidèlement les changements ; sinon réponds `block` suivi de la liste précise des passages périmés (fichier + citation exacte) et de la correction attendue pour chacun.",
+            "model": "claude-sonnet-4-6",
+            "timeout": 120,
+            "statusMessage": "Vérification synchro doc…"
+          }
+        ]
+      }
+    ]
+  }
+}
