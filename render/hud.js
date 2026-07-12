@@ -1,5 +1,5 @@
 // All DOM rendering: top bar, grids, contracts, expeditions, journal, toast, modal.
-import { FACTIONS, PREF, ITEMS, ZONES, MAX_DAY, FACTION_EVENTS, HAGGLE, RADIATION, TRAITS, ROSTER, UPGRADES, MERCHANTS, itemById, encounterById, stalkerById } from "../src/config.js";
+import { FACTIONS, PREF, ITEMS, ZONES, MAX_DAY, FACTION_EVENTS, HAGGLE, RADIATION, TRAITS, ROSTER, UPGRADES, MERCHANTS, DEBT, itemById, encounterById, stalkerById } from "../src/config.js";
 import { buyPrice, sellPrice, isUndervalued } from "../src/market.js";
 import { marketClosed, zoneBlocked, bountyExtraDeath } from "../src/factions.js";
 import { canPick } from "../src/encounters.js";
@@ -73,6 +73,14 @@ export function renderTop(state) {
   const rd = $("#rads");
   rd.textContent = `${state.rads} ☢${dose > 0 ? ` +${dose}/nuit` : ""}`;
   rd.style.color = state.rads >= RADIATION.sickAt ? "var(--danger)" : state.rads >= RADIATION.sickAt / 2 ? "var(--rust)" : "var(--txt)";
+  // gauges: debt repaid, radiation toward the lethal cap, days elapsed
+  $("#debtBar").style.width = `${(DEBT.start - state.debt) / DEBT.start * 100}%`;
+  const rb = $("#radsBar");
+  rb.style.width = `${Math.min(100, state.rads / RADIATION.deathAt * 100)}%`;
+  rb.style.background = state.rads >= RADIATION.sickAt ? "var(--danger)" : state.rads >= RADIATION.sickAt / 2 ? "var(--rust)" : "var(--rad)";
+  const db = $("#dayBar");
+  db.style.width = `${state.day / MAX_DAY * 100}%`;
+  db.style.background = state.day >= MAX_DAY * 0.75 ? "var(--rust)" : "var(--blue)";
   const r = $("#reps");
   r.innerHTML = "";
   for (const k in FACTIONS) {
