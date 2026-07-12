@@ -21,13 +21,16 @@ export function bindInput(state) {
 
   $("#nextDay").onclick = () => {
     const logBox = $("#log");
-    const before = logBox.children.length;
+    const before = new Set(logBox.querySelectorAll(".e"));
     nextDay(state);
     // on game end, the game:ended handler renders the top bar and the modal
     if (!state.over) {
       renderAll(state);
-      // journal entries are prepended, so the night's entries are the first N children
-      showNightRecap(state.day, [...logBox.children].slice(0, logBox.children.length - before));
+      // chronological order: entries landed in the previous day group (the nightly debt) came first
+      const added = [...logBox.querySelectorAll(".e")].filter(e => !before.has(e));
+      const newGroup = logBox.querySelector(".dayg");
+      showNightRecap(state.day, added.sort((a, b) =>
+        (a.closest(".dayg") === newGroup) - (b.closest(".dayg") === newGroup)));
     }
   };
 

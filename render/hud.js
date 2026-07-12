@@ -11,13 +11,20 @@ import { hasUpgrade } from "../src/upgrades.js";
 export const $ = s => document.querySelector(s);
 export const fmt = n => Math.round(n).toLocaleString("fr-FR") + " ₽";
 
+// newest day group on top; inside a group, entries read chronologically
 export function log(html, cls = "") {
   const d = document.createElement("div");
   d.className = "e" + (cls ? " " : "") + cls;
   d.innerHTML = html;
-  $("#log").prepend(d);
+  const group = $("#log .dayg");
+  if (group) group.append(d); else $("#log").prepend(d);
 }
-export function dayLog(day) { log(`<span class="day">▶ Jour ${day}</span>`); }
+export function dayLog(day) {
+  const g = document.createElement("div");
+  g.className = "dayg";
+  g.innerHTML = `<div class="day">▶ Jour ${day}</div>`;
+  $("#log").prepend(g);
+}
 
 export function toast(msg) {
   const t = $("#toast");
@@ -35,7 +42,7 @@ export function showModal(title, html) {
 
 // blocking night report: replays the journal entries added during nextDay()
 export function showNightRecap(day, entries) {
-  const rows = entries.reverse().filter(e => !e.querySelector(".day")).map(e => e.outerHTML).join("");
+  const rows = entries.map(e => e.outerHTML).join("");
   $("#mTitle").textContent = `Jour ${day} — rapport de la nuit`;
   $("#mText").innerHTML = `<div class="recap">${rows || `<div class="e">La nuit fut calme. Rien à signaler.</div>`}</div>`;
   const btn = $("#mBtn");

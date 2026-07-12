@@ -17,21 +17,21 @@ const zoneName = id => { const z = ZONES.find(z => z.id === id); return z ? z.nm
 bus.on("day:started", ({ day }) => dayLog(day));
 bus.on("debt:paid", ({ amount, debt }) =>
   log(`🌙 Versement nocturne au Fixeur : <b class="bad">-${fmt(amount)}</b>. Dette restante : <b>${fmt(debt)}</b>.`));
-bus.on("story:reached", ({ text }) => log(text, "story"));
+bus.on("story:reached", ({ text }) => log(`📟 ${text}`, "story"));
 bus.on("rads:changed", ({ delta, rads }) => {
   if (delta > 0) log(`☢ Tes artefacts t'irradient pendant la nuit : <b class="bad">+${delta} rads</b> (${rads}/${RADIATION.deathAt}).`, "bad");
   else log(`☢ Ton corps élimine les radiations : ${delta} rads (${rads}/${RADIATION.deathAt}).`);
 });
 bus.on("rads:sickened", ({ cost, rads }) => log(`🤢 Le mal des rads te ronge (${rads} ☢) : <b class="bad">-${fmt(cost)}</b> en anti-rad et vodka.`, "bad"));
 bus.on("market:shifted", ({ ev }) => {
-  if (ev.cat !== "none") log(ev.t, ev.cls);
+  if (ev.cat !== "none") log(`📊 ${ev.t}`, ev.cls);
   $("#mkt-note").innerHTML = ev.cat !== "none" ? `<span style="color:var(--blue)">Événement : ${ev.t}</span>` : "";
 });
 
 /* trade */
 bus.on("item:bought", ({ id }) => toast(`Acheté ${itemById(id).nm}`));
 bus.on("item:sold", ({ id, fac, count, total, gain }) => {
-  log(`Vendu ${count}× ${itemById(id).nm} aux ${facName(fac)} pour <b class="good">${fmt(total)}</b>. Réput ${FACTIONS[fac].name} +${gain}.`);
+  log(`💰 Vendu ${count}× ${itemById(id).nm} aux ${facName(fac)} pour <b class="good">${fmt(total)}</b>. Réput ${FACTIONS[fac].name} +${gain}.`);
   toast(`+${fmt(total)}`);
 });
 bus.on("trade:blocked", ({ fac }) => toast(`Comptoir ${FACTIONS[fac].name} fermé (guerre)`));
@@ -95,7 +95,7 @@ bus.on("contract:failed", ({ contract }) =>
 /* expeditions & roster */
 const stalkerName = id => stalkerById(id).name;
 bus.on("expedition:launched", ({ zoneId, stalkerId, fee }) => {
-  log(`Tu paies <b>${fmt(fee)}</b> à <b>${stalkerName(stalkerId)}</b> pour fouiller <b>${zoneName(zoneId)}</b>.`);
+  log(`🥾 Tu paies <b>${fmt(fee)}</b> à <b>${stalkerName(stalkerId)}</b> pour fouiller <b>${zoneName(zoneId)}</b>.`);
   toast(`${stalkerName(stalkerId)} part pour ${zoneName(zoneId)}`);
 });
 bus.on("expedition:lost", ({ zoneId, stalkerId, level }) => {
@@ -151,7 +151,7 @@ bus.on("game:ended", ({ win, reason }) => {
 
 /* init */
 bindInput(state);
+dayLog(state.day);
 log(`<span class="story">Sidorovitch te coince près de sa planque. « Tu me dois <b>${fmt(DEBT.start)}</b>, marchand. Tu as <b>${MAX_DAY} jours</b> pour rembourser le Fixeur — sinon la Zone récupère un cadavre de plus. »</span>`);
 log(`Chaque nuit, une part de ton argent part rembourser la dette. Achète malin, joue les factions, envoie des stalkers au charbon.`);
-dayLog(state.day);
 renderAll(state);

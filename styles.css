@@ -137,11 +137,19 @@ h1 span{color:var(--rust)}
 /* Journal */
 #log{font-family:var(--mono);background:#000;border:1px solid var(--line);border-radius:8px;padding:12px;height:340px;
   overflow-y:auto;font-size:12px;line-height:1.55}
-#log .e{margin-bottom:6px;padding-bottom:6px;border-bottom:1px solid #161a14}
-#log .day{color:var(--rad);font-weight:bold}
+#log .dayg{margin-bottom:16px}
+#log .dayg:last-child{margin-bottom:0}
+#log .e{margin-bottom:6px;padding:0 0 6px 8px;border-bottom:1px solid #161a14;border-left:2px solid transparent}
+#log .dayg .e:last-child{border-bottom:none;margin-bottom:0}
+#log .day{color:var(--rad);font-weight:bold;letter-spacing:2px;text-transform:uppercase;font-size:11px;
+  border-bottom:1px solid var(--line);padding-bottom:4px;margin-bottom:8px}
 #log .story{color:var(--gold)}
 #log .good{color:var(--rad)} #log .bad{color:var(--danger)}
 #log .ev{color:var(--blue)}
+#log .e.story{border-left-color:var(--gold)}
+#log .e.good{border-left-color:var(--rad)}
+#log .e.bad{border-left-color:var(--danger)}
+#log .e.ev{border-left-color:var(--blue)}
 
 .foot{margin-top:14px;display:flex;gap:10px;align-items:center}
 .hint{color:var(--dim);font-size:11px}
