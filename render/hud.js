@@ -1,7 +1,8 @@
 // All DOM rendering: top bar, grids, contracts, expeditions, journal, toast, modal.
-import { FACTIONS, PREF, ITEMS, ZONES, MAX_DAY, EXPEDITIONS, FACTION_EVENTS, itemById } from "../src/config.js";
+import { FACTIONS, PREF, ITEMS, ZONES, MAX_DAY, EXPEDITIONS, FACTION_EVENTS, itemById, encounterById } from "../src/config.js";
 import { buyPrice, sellPrice } from "../src/market.js";
 import { marketClosed, zoneBlocked, bountyExtraDeath } from "../src/factions.js";
+import { canPick } from "../src/encounters.js";
 
 export const $ = s => document.querySelector(s);
 export const fmt = n => Math.round(n).toLocaleString("fr-FR") + " ₽";
@@ -143,6 +144,19 @@ export function renderExp(state) {
   });
 }
 
+export function renderEncounter(state) {
+  const c = $("#encounter");
+  if (!state.encounter) { c.style.display = "none"; c.innerHTML = ""; return; }
+  const enc = encounterById(state.encounter.id);
+  c.style.display = "block";
+  c.innerHTML = `<div class="enc">
+    <div class="head"><span class="eico">${enc.ico}</span><b>Rencontre</b><small>— l'occasion passera demain</small></div>
+    <p>${enc.text}</p>
+    <div class="row">${enc.options.map(o =>
+    `<button class="btn sm" ${canPick(state, o) && !state.over ? "" : "disabled"} data-act="encounter" data-id="${o.id}">${o.label}</button>`).join("")}</div>
+  </div>`;
+}
+
 export function renderFacEvents(state) {
   const c = $("#facEvents");
   if (!state.factionEvents.length) { c.style.display = "none"; c.innerHTML = ""; return; }
@@ -208,6 +222,7 @@ export function renderContracts(state) {
 export function renderAll(state) {
   renderTop(state);
   renderFacEvents(state);
+  renderEncounter(state);
   renderMarket(state);
   renderSell(state);
   renderContracts(state);

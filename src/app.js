@@ -9,6 +9,7 @@ import { fluctuate } from "./market.js";
 import { spawnFactionEvent, tickFactionEvents, checkBounty } from "./factions.js";
 import { genDeliveryOffer, tickContracts } from "./contracts.js";
 import { resolveExps } from "./expeditions.js";
+import { drawEncounter } from "./encounters.js";
 
 export function createApp({ rng }) {
   const state = {
@@ -28,9 +29,12 @@ export function createApp({ rng }) {
     sellFaction: START.sellFaction,
     milestones: {},
     over: false,
+    encounter: null,
+    marketTip: null,
   };
   ITEMS.forEach(i => { state.price[i.id] = i.base; state.inv[i.id] = 0; });
   Object.assign(state.inv, START.inv);
+  drawEncounter(state); // day 1 gets its card too
   return state;
 }
 
@@ -73,8 +77,11 @@ export function nextDay(state) {
   if (state.day >= FACTION_EVENTS.spawnFromDay && state.rng() < FACTION_EVENTS.spawnChance) spawnFactionEvent(state);
   if (state.day >= DELIVERY.spawnFromDay && state.rng() < DELIVERY.spawnChance) genDeliveryOffer(state);
   checkBounty(state);
+  drawEncounter(state);
 
-  const ev = pick(state.rng, MARKET_EVENTS);
+  // a bribed tip forces tomorrow's market event, then burns out
+  const ev = state.marketTip != null ? MARKET_EVENTS[state.marketTip] : pick(state.rng, MARKET_EVENTS);
+  state.marketTip = null;
   state.bus.emit("market:shifted", { ev });
   fluctuate(state, ev);
 }

@@ -90,6 +90,18 @@ bus.on("expedition:returned", ({ zoneId, name, loot }) => {
   log(`🎒 <b>${name}</b> revient de <b>${zoneName(zoneId)}</b> avec : <b class="good">${txt}</b>.`, "good");
 });
 
+/* encounters */
+bus.on("encounter:resolved", ({ outcome, text, applied }) => {
+  const parts = [];
+  if (applied.money) parts.push(`${applied.money > 0 ? "+" : "-"}${fmt(Math.abs(applied.money))}`);
+  for (const id in applied.items || {}) parts.push(`${applied.items[id] > 0 ? "+" : ""}${applied.items[id]} ${itemById(id).nm}`);
+  for (const fac in applied.rep || {}) parts.push(`réput ${FACTIONS[fac].name} ${applied.rep[fac] > 0 ? "+" : ""}${applied.rep[fac]}`);
+  if (applied.tip) parts.push(applied.tip === "all" ? "tuyau : tout va monter demain" : `tuyau : les prix « ${applied.tip} » montent demain`);
+  const cls = outcome === "failure" ? "bad" : outcome === "success" ? "good" : "";
+  log(`🤝 ${text}${parts.length ? ` <b>(${parts.join(" · ")})</b>` : ""}`, cls);
+  if (parts.length) toast(parts[0]);
+});
+
 /* game end */
 bus.on("game:ended", ({ win }) => {
   renderTop(state);

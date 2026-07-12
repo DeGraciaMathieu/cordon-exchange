@@ -4,6 +4,7 @@ import { buy, sell, selectFaction } from "../src/market.js";
 import { launchExp } from "../src/expeditions.js";
 import { acceptDelivery, deliverContract } from "../src/contracts.js";
 import { payRansom } from "../src/factions.js";
+import { chooseEncounter } from "../src/encounters.js";
 import { $, renderAll, renderSell } from "./hud.js";
 
 export function bindInput(state) {
@@ -33,6 +34,7 @@ export function bindInput(state) {
     else if (act === "accept") acceptDelivery(state, +id);
     else if (act === "deliver") deliverContract(state, +id);
     else if (act === "ransom") payRansom(state, id);
+    else if (act === "encounter") chooseEncounter(state, id);
     else return;
     renderAll(state);
   });

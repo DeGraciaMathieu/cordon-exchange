@@ -66,6 +66,102 @@ export const MARKET_EVENTS = [
   { t: "Rumeur d'un gisement d'artefacts : le marché anticipe une baisse.", cat: "artefact", mult: .82, cls: "ev" },
 ];
 
+// daily choice encounters — declarative consequences applied by src/encounters.js
+// effect fields: money (±, losses clamped to available cash), items {id: ±n} (clamped to stock),
+// rep {fac: ±n} (via shiftRep, spills apply), tip (leaks a rising market event for tomorrow), t (journal text)
+// risk: { p: success probability, success: effects, failure: effects }
+export const ENCOUNTERS = [
+  {
+    id: "wounded-stalker",
+    ico: "🩸",
+    text: "Un stalker blessé se traîne jusqu'à ton comptoir : « Une anomalie a grillé ma trousse. Soigne-moi et mon Cristal est à toi. »",
+    options: [
+      { id: "heal", label: "Le soigner (1 trousse méd.)", needs: { items: { medkit: 1 } },
+        effects: { items: { medkit: -1, crystal: 1 }, rep: { loners: 5 }, t: "Tu le rafistoles. Il te laisse son Cristal et ton nom circule en bien autour des feux de camp." } },
+      { id: "rob", label: "Le dépouiller",
+        risk: { p: 0.55,
+          success: { items: { crystal: 1 }, rep: { loners: -8, bandits: 3 }, t: "Tu le délestes de son Cristal sans un mot. Les feux de camp jaseront." },
+          failure: { money: -500, rep: { loners: -8 }, t: "Il se débat et te taillade le bras — les soins te coûtent cher." } } },
+      { id: "ignore", label: "Passer ton chemin",
+        effects: { rep: { loners: -2 }, t: "Tu détournes le regard. La Zone n'oublie pas ce genre de choix." } },
+    ],
+  },
+  {
+    id: "army-tip",
+    ico: "🎖️",
+    text: "Un militaire véreux se penche à ta fenêtre : « 400 ₽ et je te dis ce que les convois vont s'arracher demain. »",
+    options: [
+      { id: "pay", label: "Payer le pot-de-vin (400 ₽)", needs: { money: 400 }, effects: { money: -400 },
+        risk: { p: 0.65,
+          success: { tip: true, t: "Il murmure deux mots et disparaît. Le tuyau a l'air solide." },
+          failure: { t: "Il empoche, salue… et tu ne le reverras jamais." } } },
+      { id: "refuse", label: "Refuser",
+        effects: { t: "Tu refuses poliment. Il hausse les épaules et va tenter le comptoir voisin." } },
+    ],
+  },
+  {
+    id: "bandit-cache",
+    ico: "📦",
+    text: "Deux bandits posent une caisse cadenassée : « Planque ça jusqu'à demain. 900 ₽, et pose pas de questions. »",
+    options: [
+      { id: "hide", label: "Planquer la caisse (+900 ₽)", effects: { money: 900, rep: { bandits: 4 } },
+        risk: { p: 0.75,
+          success: { t: "La nuit passe sans encombre et la caisse disparaît à l'aube. Argent facile." },
+          failure: { money: -1200, rep: { duty: -6 }, t: "Une patrouille du Devoir fouille ta planque : amende salée et regards mauvais." } } },
+      { id: "refuse", label: "Refuser",
+        effects: { rep: { bandits: -4 }, t: "Les bandits remballent la caisse en te dévisageant longuement." } },
+    ],
+  },
+  {
+    id: "scientist",
+    ico: "🧪",
+    text: "Un savant du bunker cherche une Méduse « encore chaude » pour ses mesures : « 2 400 ₽, prix ferme. »",
+    options: [
+      { id: "sell", label: "Vendre une Méduse (2 400 ₽)", needs: { items: { medusa: 1 } },
+        effects: { items: { medusa: -1 }, money: 2400, rep: { freedom: 4 }, t: "Il emballe la Méduse avec des gestes de dentellière. La Liberté apprécie les amis de la science." } },
+      { id: "haggle", label: "Exiger 3 200 ₽", needs: { items: { medusa: 1 } },
+        risk: { p: 0.5,
+          success: { items: { medusa: -1 }, money: 3200, t: "Il peste contre les rapaces du Cordon… et paie." },
+          failure: { t: "Vexé, il tourne les talons. La science ira voir ailleurs." } } },
+      { id: "decline", label: "Décliner",
+        effects: { t: "Tu gardes tes artefacts. La science attendra." } },
+    ],
+  },
+  {
+    id: "anomaly-dive",
+    ico: "🌀",
+    text: "Un gamin du camp a repéré une anomalie fraîche derrière les entrepôts. Personne n'ose y toucher.",
+    options: [
+      { id: "dive", label: "Y aller toi-même",
+        risk: { p: 0.45,
+          success: { items: { flash: 1 }, t: "Tu ressors tremblant, un Éclair crépitant encore au fond du sac." },
+          failure: { money: -700, t: "L'anomalie te mâche et te recrache. Les soins te coûtent cher." } } },
+      { id: "send-kid", label: "Payer le gamin (200 ₽)", needs: { money: 200 }, effects: { money: -200 },
+        risk: { p: 0.3,
+          success: { items: { flash: 1 }, rep: { loners: 2 }, t: "Le gosse est vif : il revient avec un Éclair et un sourire jusqu'aux oreilles." },
+          failure: { rep: { loners: -5 }, t: "Le gamin revient bredouille et boitant. Au camp, ça ne se pardonne pas vite." } } },
+      { id: "forget", label: "Laisser tomber",
+        effects: { t: "Tu laisses l'anomalie à qui voudra s'y frotter." } },
+    ],
+  },
+  {
+    id: "vodka-night",
+    ico: "🍶",
+    text: "Des stalkers fêtent un retour miraculeux et réclament ta vodka « au prix de l'amitié ».",
+    options: [
+      { id: "offer", label: "Offrir la tournée (2 vodkas)", needs: { items: { vodka: 2 } },
+        effects: { items: { vodka: -2 }, rep: { loners: 6 }, t: "La tournée est pour toi. On te promet la primeur des prochaines trouvailles." } },
+      { id: "gouge", label: "Vendre au triple (2 vodkas)", needs: { items: { vodka: 2 } },
+        risk: { p: 0.6,
+          success: { items: { vodka: -2 }, money: 1500, t: "Trop heureux d'être vivants, ils paient sans compter." },
+          failure: { items: { vodka: -2 }, money: 500, rep: { loners: -4 }, t: "Ils paient de mauvaise grâce et le mot « rapace » fuse dans ton dos." } } },
+      { id: "close", label: "Fermer boutique",
+        effects: { rep: { loners: -2 }, t: "Tu éteins la lampe. La fête se fera sans toi — et on s'en souviendra." } },
+    ],
+  },
+];
+export const encounterById = id => ENCOUNTERS.find(e => e.id === id);
+
 export const TRADE = {
   buyMarkup: 1.05,      // market sells 5% above the current price
   merchantMargin: 0.9,  // trader cut when selling to a faction
