@@ -11,9 +11,9 @@ auto_invoke: true
 | Concept | Implémentation |
 |---|---|
 | État complet | `createApp({rng})` — `src/app.js`. Champs : `day`, `money`, `debt`, `rep{fac}`, `price{id}`, `history{id: prix[]}`, `inv{id}`, `exps[]`, `factionEvents[]`, `deliveryOffers[]`, `activeDeliveries[]`, `contractSeq`, `sellFaction`, `buyMerchant`, `milestones{}`, `over`, `encounter`, `marketTip`, `rads`, `stalkers[]`, `activeStalker`, `fallen[]`, `upgrades[]`, plus `rng` et `bus` |
-| Valeurs de départ | `START` et `DEBT.start` (22 000) — `src/config.js` ; inventaire initial : 1 Méduse, 2 Saucissons |
+| Valeurs de départ | `START` et `DEBT.start` (26 000) — `src/config.js` ; inventaire initial : 1 Méduse, 2 Saucissons |
 | Boucle de jour | `nextDay(state)` — `src/app.js`, seule porte d'entrée de la simulation (bouton « Dormir ») |
-| Dette | `DEBT { start: 22000, garnish: 0.5 }` — prélèvement nocturne de 50 % du cash en tête de `nextDay` → `debt:paid` |
+| Dette | `DEBT { start: 26000, garnish: 0.5 }` — prélèvement nocturne de 50 % du cash en tête de `nextDay` → `debt:paid` |
 | Jalons narratifs | `STORY_BEATS` (config) + `checkStory` (app.js), déclenchés sur le total remboursé → `story:reached` (une seule fois, via `state.milestones`) |
 | Fin de partie | `endGame` (interne) : `state.over = true` + `game:ended {win, reason, day, money, debt}`. Victoire = dette soldée ; défaites : `reason: "deadline"` (`day > MAX_DAY` 24) ou `reason: "rads"` (jauge à `RADIATION.deathAt`) |
 | Radiations | `state.rads` (0 à `RADIATION.deathAt` 100) ; `tickRadiation` (`src/radiation.js`) : dose nocturne = Σ `rad × qty` des artefacts en stock (`radsDose`, ÷2 avec la Caisse plombée) ; sans artefact, récupération de `decay` (8)/nuit ; à `sickAt` (60), frais de soins nocturnes `rads × sickCostPerRad` (5 ₽) ; événements `rads:changed` / `rads:sickened` |
@@ -32,9 +32,9 @@ auto_invoke: true
 8. `tickFactionEvents` (décompte, raids/embuscades nocturnes, résolutions).
 9. `tickContracts` (expiration des offres, échéances).
 10. `tickRadiation` — dose des artefacts ou récupération, frais de soins ; **défaite** (`reason: "rads"`) si la jauge atteint `RADIATION.deathAt`.
-11. Spawn éventuel d'un événement de faction (`day ≥ 3`, p = 0,45 — `FACTION_EVENTS.spawnFromDay/spawnChance`).
+11. Spawn éventuel d'un événement de faction (`day ≥ 3`, p = 0,6 — `FACTION_EVENTS.spawnFromDay/spawnChance`).
 12. Offre de livraison éventuelle (`day ≥ 2`, p = 0,5 — `DELIVERY.spawnFromDay/spawnChance`).
-13. `checkBounty` (réputation ≤ −70 → prime).
+13. `checkBounty` (réputation ≤ −60 → prime).
 14. `drawEncounter` — la carte de la veille, jouée ou non, est remplacée.
 15. Tirage de l'événement de marché (forcé par `state.marketTip` s'il est armé, puis remis à `null`) → `market:shifted` → `fluctuate`.
 
@@ -51,4 +51,3 @@ auto_invoke: true
 - Après `game:ended`, `render/input.js` ne relance pas `renderAll` (c'est le handler `game:ended` de `main.js` qui rend la barre + la modale).
 - Après chaque `nextDay` (hors fin de partie), `render/input.js` affiche un rapport de nuit bloquant (`showNightRecap`, `render/hud.js`) construit à partir des entrées de journal ajoutées pendant l'appel — pur rendu, rien dans `src/`.
 - Le reset de partie est `location.reload()` — il n'existe pas de fonction reset dans `src/`.
-- Le 3ᵉ jalon (24 000) est inatteignable (dette max 22 000) — quirk préservé volontairement.

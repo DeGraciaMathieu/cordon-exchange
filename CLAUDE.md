@@ -1,6 +1,6 @@
 # Trader du Cordon
 
-Jeu de négoce au tour par tour dans la Zone : rembourser la dette de 22 000 ₽ au Fixeur en 24 jours en jouant sur le marché, les factions, les contrats de livraison et les expéditions.
+Jeu de négoce au tour par tour dans la Zone : rembourser la dette de 26 000 ₽ au Fixeur en 24 jours en jouant sur le marché, les factions, les contrats de livraison et les expéditions.
 
 ## Stack
 
@@ -51,7 +51,7 @@ Jeu de négoce au tour par tour dans la Zone : rembourser la dette de 22 000 ₽
 - **Si une approche échoue après 2 tentatives, reprendre le plan avant de continuer.**
 - Tout changement de comportement observable doit synchroniser la doc vivante : les hints statiques d'`index.html` s'ils décrivent la règle modifiée, les skills de `.claude/skills/` et ce fichier.
 - Les tests sont **macro** : état seedé + assertions sur le comportement observable (argent, inventaire, réputation, événements du bus), jamais sur un détail d'implémentation.
-- Quirks préservés volontairement (ne pas « corriger » sans demande) : le « 25 000 ₽ » du markup initial (écrasé au chargement par la vraie dette), le 3ᵉ jalon narratif à 24 000 ₽ inatteignable (dette max 22 000), le reset de partie par `location.reload()`.
+- Quirks préservés volontairement (ne pas « corriger » sans demande) : le « 25 000 ₽ » du markup initial (écrasé au chargement par la vraie dette), le reset de partie par `location.reload()`.
 
 ## Skills disponibles
 

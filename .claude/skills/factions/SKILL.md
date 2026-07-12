@@ -15,8 +15,8 @@ auto_invoke: true
 | Guerre | `{type:"war", a, b, left, support}` — le comptoir de `b` est fermé (`marketClosed`) ; vendre armes/conso à `a` accumule `support` ; à l'échéance : `support ≥ 4` → `a` gagne (`shiftRep(a, +18)`, `faction:war-won`), sinon `shiftRep(b, +6)` (`faction:war-stalled`) |
 | Contrat de catégorie | `{type:"contract", fac, cat, mult}` — prix ×1.5 (`catDemand`) et réputation ×2 (`repMult`) sur cette catégorie |
 | Blocus | `{type:"blockade", zone, fac}` — `zoneBlocked(state, zid)` : expéditions impossibles (bouton désactivé). Jamais sur Le Cordon (`ZONES.slice(1)` au spawn) |
-| Raid | `{type:"raid"}` — chaque nuit restante : vol d'un item (p 0.35, `nightRaid`) ; les bandits fourguent ×1.2 (`catDemand`) |
-| Prime (bounty) | `{type:"bounty", fac, left, ransom}` — posée par `checkBounty` quand `rep ≤ BOUNTY.repThreshold` (−70) ; comptoir fermé, embuscades nocturnes (`bountyNight`, p 0.4, perte 400–1300 ₽), `+0.10` de mortalité d'expédition (`bountyExtraDeath`) ; sortie par `payRansom` (réput plancher −30) ou expiration 6 j (plancher −35) |
+| Raid | `{type:"raid"}` — chaque nuit restante : vol d'un item (p 0.45, `nightRaid`) ; les bandits fourguent ×1.2 (`catDemand`) |
+| Prime (bounty) | `{type:"bounty", fac, left, ransom}` — posée par `checkBounty` quand `rep ≤ BOUNTY.repThreshold` (−60) ; comptoir fermé, embuscades nocturnes (`bountyNight`, p 0.4, perte 400–1300 ₽), `+0.10` de mortalité d'expédition (`bountyExtraDeath`) ; sortie par `payRansom` (réput plancher −30) ou expiration 6 j (plancher −35) |
 | Cycle de vie | `spawnFactionEvent` (cap `FACTION_EVENTS.maxActive` = 2 hors primes, une seule guerre à la fois) et `tickFactionEvents` — `src/factions.js`, appelés par `nextDay` |
 | Prédicats pour le rendu | `marketClosed`, `hasBounty`, `bountyExtraDeath`, `zoneBlocked` — importés par `render/hud.js` pour désactiver les boutons |
 | Constantes | groupes `FACTION_EVENTS`, `BOUNTY`, `REP` — `src/config.js` |

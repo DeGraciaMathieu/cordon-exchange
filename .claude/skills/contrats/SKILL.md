@@ -15,7 +15,7 @@ auto_invoke: true
 | Identifiant | `++state.contractSeq` (numérique, sert de `data-id` aux boutons) |
 | Acceptation | `acceptDelivery(state, id)` — déplace l'offre vers `state.activeDeliveries` avec `delivered: 0`, `left: days` → `contract:accepted` |
 | Livraison | `deliverContract(state, id)` — consomme l'inventaire jusqu'à `qty` ; complet → `+reward`, `shiftRep(fac, +14)`, retrait de la liste, `contract:completed` ; partiel → `contract:progressed` ; rien en stock → `contract:blocked` |
-| Échéance | `tickContracts` (appelé par `nextDay`) : offres expirées supprimées **en silence** ; contrat en retard → `shiftRep(fac, −18)`, `contract:failed`, items déjà livrés perdus |
+| Échéance | `tickContracts` (appelé par `nextDay`) : offres expirées supprimées **en silence** ; contrat en retard → `shiftRep(fac, −22)`, `contract:failed`, items déjà livrés perdus |
 | Constantes | groupe `DELIVERY` — `src/config.js` |
 | Rendu | `renderContracts` (`render/hud.js`) : menaces (primes), offres, contrats en cours, badge d'onglet |
 
