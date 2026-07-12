@@ -22,7 +22,7 @@ Chaque jour, une carte-événement propose 2-3 options ; l'occasion disparaît l
 | Tuyau marché (`tip`) | tire un `MARKET_EVENTS` haussier (`mult > 1`), arme `state.marketTip` ; `nextDay` force cet événement le lendemain puis le remet à `null` |
 | Résolution | `chooseEncounter(state, optionId)` → applique les effets, émet `encounter:resolved {encounterId, optionId, outcome, text, applied}` |
 | Rendu | `renderEncounter` (`render/hud.js`), conteneur `#encounter` (`index.html`), styles `.enc` (`styles.css`), boutons `data-act="encounter"` routés par `render/input.js` |
-| Journal | abonnement `encounter:resolved` dans `render/main.js` : texte narratif + résumé auto des deltas réellement appliqués (`applied`) — les chiffres ne sont jamais dupliqués dans les textes |
+| Résultat | abonnement `encounter:resolved` dans `render/main.js` : modale bloquante (`showEncounterResult`, `render/hud.js`, styles `.enc-result`) — icône, texte narratif, deltas réellement appliqués colorés selon l'issue — plus la même ligne dans le journal ; les chiffres ne sont jamais dupliqués dans les textes |
 
 ## Ajouter une rencontre
 
