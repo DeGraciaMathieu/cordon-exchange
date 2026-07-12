@@ -17,8 +17,9 @@ auto_invoke: true
 | Demande conjoncturelle | `catDemand(state, fac, cat)` (`src/factions.js`) : contrat de catégorie ×1.5, guerre (armes/conso pour l'agresseur) ×1.35, raid (bandits) ×1.2 |
 | Achat | `buy(state, id, n)` — s'arrête à court d'argent, émet `item:bought {id, count}` (toujours, même count 0) |
 | Vente | `sell(state, id, n)` — bloquée si `marketClosed` (`trade:blocked`), sinon émet `item:sold {id, fac, count, total, gain}` |
-| Gain de réputation à la vente | `TRADE.repGainBase (3) + round(count × 1.5 si artefact)` ; ×0.7 pour les bandits ; × `repMult` (contrat ×2, guerre ×1.6) → `shiftRep` |
-| Soutien de guerre | vendre armes/conso à l'agresseur incrémente `war.support` de `count` (dans `sell`) |
+| Marchandage | `haggle(state, id)` — pari sur 1 item (`HAGGLE`, config) : `chance` 0.5 de vendre à `sellPrice × (1 + bonus 0.15)` avec le gain de réputation normal ; sinon **pas de vente** et `shiftRep(fac, −repPenalty 4)`. Émet `trade:haggled {success, …}` ; même garde `marketClosed` que `sell` |
+| Gain de réputation à la vente | `saleRepGain` (helper partagé `sell`/`haggle`) : `TRADE.repGainBase (3) + round(count × 1.5 si artefact)` ; ×0.7 pour les bandits ; × `repMult` (contrat ×2, guerre ×1.6) → `shiftRep` |
+| Soutien de guerre | vendre armes/conso à l'agresseur incrémente `war.support` de `count` (dans `saleRepGain`, donc aussi via un marchandage réussi) |
 | Fluctuations quotidiennes | `fluctuate(state, ev)` : bruit `±vol` (par item), rappel vers `base` (`MARKET.meanPull` 0.15), multiplicateur d'événement, biais de guerre (`marketCatMult`), clamp `[0.4×base, 2.2×base]` |
 | Faction de vente sélectionnée | `state.sellFaction` via `selectFaction(state, fac)` |
 | Constantes | groupes `TRADE` et `MARKET` — `src/config.js` |

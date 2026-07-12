@@ -29,7 +29,7 @@ Jeu de négoce au tour par tour dans la Zone : rembourser la dette de 22 000 ₽
 4. **Aucun état global de module** : tout l'état vit dans l'objet retourné par `createApp` (`src/app.js`). Les fonctions de `src/` prennent `state` en premier argument. Tout nouveau champ d'état reçoit sa valeur par défaut dans `createApp`.
 5. **La logique n'appelle jamais le rendu** : `src/` émet `state.bus.emit("sujet:verbe", payload)` ; `render/main.js` s'abonne et produit journal, toasts, modale.
 6. **Toute constante de gameplay vit dans `src/config.js`** — aucune valeur magique dupliquée dans la logique. Les constantes purement UI (taille de lot ×5, durée du toast 1600 ms, seuil de tendance ±4 %) restent côté `render/`.
-7. **`nextDay(state)` (`src/app.js`) est la seule porte d'entrée de la simulation** ; les actions joueur (`buy`, `sell`, `launchExp`, `acceptDelivery`, `deliverContract`, `payRansom`, `selectFaction`, `chooseEncounter`) sont les seules autres mutations.
+7. **`nextDay(state)` (`src/app.js`) est la seule porte d'entrée de la simulation** ; les actions joueur (`buy`, `sell`, `haggle`, `launchExp`, `acceptDelivery`, `deliverContract`, `payRansom`, `selectFaction`, `chooseEncounter`) sont les seules autres mutations.
 8. **À ne jamais faire** : logique métier dans `render/` (formule de prix, règle de réputation → `src/`) ; texte destiné au joueur dans la logique de `src/` (les messages se construisent dans `render/main.js` ; seules les *données* de `config.js` — noms d'items, descriptions de zones, textes narratifs — sont en français côté src) ; muter `state` depuis `render/` autrement que via les actions ; créer de l'état hors de `createApp`.
 
 ## Style

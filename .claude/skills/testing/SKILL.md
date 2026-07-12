@@ -32,7 +32,7 @@ Zéro mock : `src/` s'importe tel quel dans Node. Pas d'assertion sur des détai
 | Fichier | Périmètre couvert |
 |---|---|
 | `test/app.test.js` | État initial, garnissement de dette, victoire/défaite, gel après `game:ended`, jalons narratifs |
-| `test/market.test.js` | Achat (arrêt à court d'argent), vente (prix + réputations), comptoir fermé, soutien de guerre, bornes de prix sur 300 jours |
+| `test/market.test.js` | Achat (arrêt à court d'argent), vente (prix + réputations), marchandage (succès/vexation/blocage), comptoir fermé, soutien de guerre, bornes de prix sur 300 jours |
 | `test/factions.test.js` | Résolution de guerre (gagnée/enlisée), prime (déclenchement, rançon, refus), cap d'événements, blocus, demande de catégorie |
 | `test/contracts.test.js` | Cycle offre → acceptation → livraison, livraison partielle, échéance ratée, expiration des offres |
 | `test/expeditions.test.js` | Coût du lancement, retour avec butin, expédition perdue |
