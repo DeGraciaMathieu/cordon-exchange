@@ -1,8 +1,9 @@
 // All DOM rendering: top bar, grids, contracts, expeditions, journal, toast, modal.
-import { FACTIONS, PREF, ITEMS, ZONES, MAX_DAY, EXPEDITIONS, FACTION_EVENTS, HAGGLE, itemById, encounterById } from "../src/config.js";
+import { FACTIONS, PREF, ITEMS, ZONES, MAX_DAY, EXPEDITIONS, FACTION_EVENTS, HAGGLE, RADIATION, itemById, encounterById } from "../src/config.js";
 import { buyPrice, sellPrice, isUndervalued } from "../src/market.js";
 import { marketClosed, zoneBlocked, bountyExtraDeath } from "../src/factions.js";
 import { canPick } from "../src/encounters.js";
+import { radsDose } from "../src/radiation.js";
 
 export const $ = s => document.querySelector(s);
 export const fmt = n => Math.round(n).toLocaleString("fr-FR") + " ₽";
@@ -33,6 +34,10 @@ export function renderTop(state) {
   $("#money").textContent = fmt(state.money);
   $("#debt").textContent = fmt(state.debt);
   $("#day").textContent = `${state.day} / ${MAX_DAY}`;
+  const dose = radsDose(state);
+  const rd = $("#rads");
+  rd.textContent = `${state.rads} ☢${dose > 0 ? ` +${dose}/nuit` : ""}`;
+  rd.style.color = state.rads >= RADIATION.sickAt ? "var(--danger)" : state.rads >= RADIATION.sickAt / 2 ? "var(--gold)" : "var(--rad)";
   const r = $("#reps");
   r.innerHTML = "";
   for (const k in FACTIONS) {

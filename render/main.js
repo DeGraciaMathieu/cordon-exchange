@@ -2,7 +2,7 @@
 import { mulberry32 } from "../src/rng.js";
 import { createApp } from "../src/app.js";
 import {
-  FACTIONS, ZONES, MAX_DAY, DEBT, BOUNTY, DELIVERY, FACTION_EVENTS, itemById,
+  FACTIONS, ZONES, MAX_DAY, DEBT, BOUNTY, DELIVERY, FACTION_EVENTS, RADIATION, itemById,
 } from "../src/config.js";
 import { $, fmt, log, dayLog, toast, showModal, renderAll, renderTop } from "./hud.js";
 import { bindInput } from "./input.js";
@@ -18,6 +18,11 @@ bus.on("day:started", ({ day }) => dayLog(day));
 bus.on("debt:paid", ({ amount, debt }) =>
   log(`🌙 Versement nocturne au Fixeur : <b class="bad">-${fmt(amount)}</b>. Dette restante : <b>${fmt(debt)}</b>.`));
 bus.on("story:reached", ({ text }) => log(text, "story"));
+bus.on("rads:changed", ({ delta, rads }) => {
+  if (delta > 0) log(`☢ Tes artefacts t'irradient pendant la nuit : <b class="bad">+${delta} rads</b> (${rads}/${RADIATION.deathAt}).`, "bad");
+  else log(`☢ Ton corps élimine les radiations : ${delta} rads (${rads}/${RADIATION.deathAt}).`);
+});
+bus.on("rads:sickened", ({ cost, rads }) => log(`🤢 Le mal des rads te ronge (${rads} ☢) : <b class="bad">-${fmt(cost)}</b> en anti-rad et vodka.`, "bad"));
 bus.on("market:shifted", ({ ev }) => {
   if (ev.cat !== "none") log(ev.t, ev.cls);
   $("#mkt-note").innerHTML = ev.cat !== "none" ? `<span style="color:var(--blue)">Événement : ${ev.t}</span>` : "";
@@ -112,10 +117,12 @@ bus.on("encounter:resolved", ({ outcome, text, applied }) => {
 });
 
 /* game end */
-bus.on("game:ended", ({ win }) => {
+bus.on("game:ended", ({ win, reason }) => {
   renderTop(state);
   if (win) {
     showModal("LIBRE", `Tu as soldé ta dette au Fixeur en ${state.day} jours.<br><br>Il te reste <b>${fmt(state.money)}</b> et ta peau. Peu de marchands du Cordon peuvent en dire autant.<br><br>« Marché conclu », lâche le Fixeur en raccrochant.`);
+  } else if (reason === "rads") {
+    showModal("FIN DE PARTIE", `Rongé par tes propres trésors, tu t'éteins au fond de ta planque, ta jauge à <b>${state.rads} ☢</b>.<br><br>Le Fixeur enverra quelqu'un ramasser les artefacts. La Zone reprend toujours son dû.`);
   } else {
     showModal("FIN DE PARTIE", `Le délai est écoulé. Il te manquait <b>${fmt(state.debt)}</b>.<br><br>Les hommes du Fixeur te retrouvent au petit matin près de l'usine. La Zone garde ses comptes.`);
   }

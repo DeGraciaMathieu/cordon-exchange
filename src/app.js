@@ -10,6 +10,7 @@ import { spawnFactionEvent, tickFactionEvents, checkBounty } from "./factions.js
 import { genDeliveryOffer, tickContracts } from "./contracts.js";
 import { resolveExps } from "./expeditions.js";
 import { drawEncounter } from "./encounters.js";
+import { tickRadiation } from "./radiation.js";
 
 export function createApp({ rng }) {
   const state = {
@@ -32,6 +33,7 @@ export function createApp({ rng }) {
     over: false,
     encounter: null,
     marketTip: null,
+    rads: 0,
   };
   ITEMS.forEach(i => { state.price[i.id] = i.base; state.history[i.id] = [i.base]; state.inv[i.id] = 0; });
   Object.assign(state.inv, START.inv);
@@ -49,9 +51,9 @@ function checkStory(state) {
   });
 }
 
-function endGame(state, win) {
+function endGame(state, win, reason = null) {
   state.over = true;
-  state.bus.emit("game:ended", { win, day: state.day, money: state.money, debt: state.debt });
+  state.bus.emit("game:ended", { win, reason, day: state.day, money: state.money, debt: state.debt });
 }
 
 export function nextDay(state) {
@@ -69,12 +71,13 @@ export function nextDay(state) {
   if (state.debt <= 0) return endGame(state, true);
 
   state.day++;
-  if (state.day > MAX_DAY) return endGame(state, false);
+  if (state.day > MAX_DAY) return endGame(state, false, "deadline");
   state.bus.emit("day:started", { day: state.day });
 
   resolveExps(state);
   tickFactionEvents(state);
   tickContracts(state);
+  if (tickRadiation(state)) return endGame(state, false, "rads");
   if (state.day >= FACTION_EVENTS.spawnFromDay && state.rng() < FACTION_EVENTS.spawnChance) spawnFactionEvent(state);
   if (state.day >= DELIVERY.spawnFromDay && state.rng() < DELIVERY.spawnChance) genDeliveryOffer(state);
   checkBounty(state);

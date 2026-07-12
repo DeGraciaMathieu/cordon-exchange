@@ -188,6 +188,15 @@ export const MARKET = {
 
 export const REP = { min: -100, max: 100, allySpill: 0.4, rivalSpill: 0.6 };
 
+// player radiation: held artefacts irradiate you every night (their rad stat)
+export const RADIATION = {
+  perRad: 1,         // rads absorbed per night per rad point held
+  decay: 8,          // nightly recovery when holding nothing radioactive
+  sickAt: 60,        // from here on, nightly medical costs kick in
+  sickCostPerRad: 5, // ₽ per rad each sick night
+  deathAt: 100,      // reaching this kills the trader
+};
+
 export const FACTION_EVENTS = {
   maxActive: 2, // bounties excluded
   spawnFromDay: 3,
