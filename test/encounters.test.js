@@ -7,9 +7,11 @@ import { MARKET_EVENTS, START, encounterById } from "../src/config.js";
 
 const app = seed => createApp({ rng: mulberry32(seed) });
 
-test("every day offers an encounter card", () => {
+test("no encounter on day 1, then one card every day", () => {
   const s = app(1);
-  assert.ok(encounterById(s.encounter.id)); // day 1 has its card
+  assert.equal(s.encounter, null); // day 1 stays quiet
+  nextDay(s);
+  assert.ok(encounterById(s.encounter.id));
   const first = s.encounter.id;
   nextDay(s);
   assert.ok(encounterById(s.encounter.id));

@@ -42,8 +42,7 @@ export function createApp({ rng }) {
   };
   ITEMS.forEach(i => { state.price[i.id] = i.base; state.history[i.id] = [i.base]; state.inv[i.id] = 0; });
   Object.assign(state.inv, START.inv);
-  drawEncounter(state); // day 1 gets its card too
-  return state;
+  return state; // no encounter on day 1: the first card is drawn by the first nextDay
 }
 
 function checkStory(state) {
