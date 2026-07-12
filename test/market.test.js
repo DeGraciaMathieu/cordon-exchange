@@ -36,12 +36,13 @@ test("a merchant refuses items outside his trade", () => {
 
 test("selecting a merchant opens his category to purchase", () => {
   const s = app(12);
+  s.money = 5000; // enough for any artefact
   selectMerchant(s, "scientist");
   assert.equal(s.buyMerchant, "scientist");
   const bp = buyPrice(s, "medusa");
   buy(s, "medusa", 1);
   assert.equal(s.inv.medusa, START.inv.medusa + 1);
-  assert.equal(s.money, START.money - bp);
+  assert.equal(s.money, 5000 - bp);
 });
 
 test("sell pays the faction price and shifts reputations", () => {

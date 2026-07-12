@@ -62,13 +62,13 @@ test("the bigger hideout hosts one more stalker", () => {
 });
 
 test("the watchdog scares off raid thieves and bounty ambushes", () => {
-  // raid theft: roll 0.2 steals without the dog (< 0.35), not with it (>= 0.175)
-  const robbed = createApp({ rng: () => 0.2 });
+  // raid theft: roll 0.3 steals without the dog (< 0.45), not with it (>= 0.225)
+  const robbed = createApp({ rng: () => 0.3 });
   robbed.factionEvents.push({ type: "raid", left: 2 });
   tickFactionEvents(robbed);
   assert.equal(robbed.inv.medusa + robbed.inv.sausage, 2); // one of the 3 starting items is gone
 
-  const guarded = createApp({ rng: () => 0.2 });
+  const guarded = createApp({ rng: () => 0.3 });
   guarded.upgrades.push("watchdog");
   guarded.factionEvents.push({ type: "raid", left: 2 });
   tickFactionEvents(guarded);

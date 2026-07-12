@@ -2,10 +2,10 @@
 
 export const MAX_DAY = 24;
 
-export const DEBT = { start: 22000, garnish: 0.5 }; // half the cash goes to the Fixer each night
+export const DEBT = { start: 26000, garnish: 0.5 }; // half the cash goes to the Fixer each night
 
 export const START = {
-  money: 2000,
+  money: 1500,
   rep: { loners: 10, duty: 0, freedom: 0, bandits: -10 },
   inv: { medusa: 1, sausage: 2 },
   sellFaction: "loners",
@@ -382,8 +382,8 @@ export const ENCOUNTERS = [
 export const encounterById = id => ENCOUNTERS.find(e => e.id === id);
 
 export const TRADE = {
-  buyMarkup: 1.05,      // market sells 5% above the current price
-  merchantMargin: 0.9,  // trader cut when selling to a faction
+  buyMarkup: 1.12,      // market sells 12% above the current price
+  merchantMargin: 0.82, // trader cut when selling to a faction
   repPriceDiv: 300,     // rep -100..100 -> ±33% on sell price
   repGainBase: 3,
   artefactRepFactor: 1.5,
@@ -419,7 +419,7 @@ export const RADIATION = {
 export const FACTION_EVENTS = {
   maxActive: 2, // bounties excluded
   spawnFromDay: 3,
-  spawnChance: 0.45,
+  spawnChance: 0.6,
   warDays: [3, 4],
   warSupportGoal: 4,
   warWinRep: 18,
@@ -432,12 +432,12 @@ export const FACTION_EVENTS = {
   contractRepMult: 2,
   blockadeDays: [2, 3],
   raidDays: [1, 2],
-  raidTheftChance: 0.35,
+  raidTheftChance: 0.45,
   raidFenceMult: 1.2, // bandits pay more for loot during a raid
 };
 
 export const BOUNTY = {
-  repThreshold: -70,
+  repThreshold: -60,
   days: 6,
   ransomBase: 2500,
   ransomPerRep: 45,
@@ -459,7 +459,7 @@ export const DELIVERY = {
   rewardMult: 1.4,
   rewardRepDiv: 400,
   completeRep: 14,
-  failRep: -18,
+  failRep: -22,
 };
 
 // permanent hideout upgrades — fx is the effect value wired into the owning module

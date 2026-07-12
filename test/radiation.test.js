@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { createApp, nextDay } from "../src/app.js";
 import { mulberry32 } from "../src/rng.js";
 import { radsDose } from "../src/radiation.js";
-import { ITEMS, RADIATION, itemById } from "../src/config.js";
+import { ITEMS, RADIATION, START, DEBT, itemById } from "../src/config.js";
 
 const app = seed => {
   const s = createApp({ rng: mulberry32(seed) });
@@ -42,7 +42,7 @@ test("radiation sickness bleeds money every night above the threshold", () => {
   const bill = Math.round(gauge * RADIATION.sickCostPerRad);
   assert.equal(s.rads, gauge);
   assert.equal(sick.cost, bill);
-  assert.equal(s.money, 1000 - bill);
+  assert.equal(s.money, START.money - Math.floor(START.money * DEBT.garnish) - bill);
 });
 
 test("reaching the radiation cap kills the trader", () => {
