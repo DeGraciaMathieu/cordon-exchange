@@ -37,6 +37,7 @@ Zéro mock : `src/` s'importe tel quel dans Node. Pas d'assertion sur des détai
 | `test/contracts.test.js` | Cycle offre → acceptation → livraison, livraison partielle, échéance ratée, expiration des offres |
 | `test/expeditions.test.js` | Coût du lancement, stalker occupé, traits (éclaireur/fouineur/vétéran), risque personnalisé, permadeath, xp et promotions |
 | `test/stalkers.test.js` | Niveaux (seuils et plafond), équipage de départ, recrutement (coût/cap/pool), sélection |
+| `test/upgrades.test.js` | Achat unique, caisse plombée (dose ÷2), contact (prix), 3ᵉ slot, planque (équipe +1), chien de garde (vols/embuscades) |
 | `test/encounters.test.js` | Tirage quotidien, effets d'option, needs non remplis, risque succès/échec, tuyau marché |
 | `test/radiation.test.js` | Dose nocturne des artefacts, récupération, mal des rads (frais), mort par radiations, revente qui stoppe l'irradiation |
 | `test/reputation.test.js` | Retombées alliés/rivaux, clamp ±100 |

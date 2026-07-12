@@ -10,13 +10,13 @@ auto_invoke: true
 
 | Concept | Implémentation |
 |---|---|
-| État complet | `createApp({rng})` — `src/app.js`. Champs : `day`, `money`, `debt`, `rep{fac}`, `price{id}`, `history{id: prix[]}`, `inv{id}`, `exps[]`, `factionEvents[]`, `deliveryOffers[]`, `activeDeliveries[]`, `contractSeq`, `sellFaction`, `milestones{}`, `over`, `encounter`, `marketTip`, `rads`, `stalkers[]`, `activeStalker`, `fallen[]`, plus `rng` et `bus` |
+| État complet | `createApp({rng})` — `src/app.js`. Champs : `day`, `money`, `debt`, `rep{fac}`, `price{id}`, `history{id: prix[]}`, `inv{id}`, `exps[]`, `factionEvents[]`, `deliveryOffers[]`, `activeDeliveries[]`, `contractSeq`, `sellFaction`, `milestones{}`, `over`, `encounter`, `marketTip`, `rads`, `stalkers[]`, `activeStalker`, `fallen[]`, `upgrades[]`, plus `rng` et `bus` |
 | Valeurs de départ | `START` et `DEBT.start` (22 000) — `src/config.js` ; inventaire initial : 1 Méduse, 2 Saucissons |
 | Boucle de jour | `nextDay(state)` — `src/app.js`, seule porte d'entrée de la simulation (bouton « Dormir ») |
 | Dette | `DEBT { start: 22000, garnish: 0.5 }` — prélèvement nocturne de 50 % du cash en tête de `nextDay` → `debt:paid` |
 | Jalons narratifs | `STORY_BEATS` (config) + `checkStory` (app.js), déclenchés sur le total remboursé → `story:reached` (une seule fois, via `state.milestones`) |
 | Fin de partie | `endGame` (interne) : `state.over = true` + `game:ended {win, reason, day, money, debt}`. Victoire = dette soldée ; défaites : `reason: "deadline"` (`day > MAX_DAY` 24) ou `reason: "rads"` (jauge à `RADIATION.deathAt`) |
-| Radiations | `state.rads` (0 à `RADIATION.deathAt` 100) ; `tickRadiation` (`src/radiation.js`) : dose nocturne = Σ `rad × qty` des artefacts en stock (`radsDose`) ; sans artefact, récupération de `decay` (8)/nuit ; à `sickAt` (60), frais de soins nocturnes `rads × sickCostPerRad` (5 ₽) ; événements `rads:changed` / `rads:sickened` |
+| Radiations | `state.rads` (0 à `RADIATION.deathAt` 100) ; `tickRadiation` (`src/radiation.js`) : dose nocturne = Σ `rad × qty` des artefacts en stock (`radsDose`, ÷2 avec la Caisse plombée) ; sans artefact, récupération de `decay` (8)/nuit ; à `sickAt` (60), frais de soins nocturnes `rads × sickCostPerRad` (5 ₽) ; événements `rads:changed` / `rads:sickened` |
 | Événement de marché du jour | tiré dans `MARKET_EVENTS` (config) — **forcé par `state.marketTip` si armé** (tuyau de rencontre, consommé après usage) → `market:shifted {ev}` → `fluctuate(state, ev)` |
 | Rencontre du jour | `state.encounter` `{id}` tiré par `drawEncounter` (`src/encounters.js`) — dans `createApp` (jour 1) puis chaque jour dans `nextDay` ; la carte non jouée est remplacée (voir skill `rencontres`) |
 

@@ -16,11 +16,11 @@ auto_invoke: true
 | Roster (état) | `state.stalkers` `[{id, xp}]` (embauchés), `state.activeStalker` (part en mission), `state.fallen` `[id]` (morts, définitif) — défauts dans `createApp` (`ROSTER.start` = Loup + Poker) |
 | Niveaux | `stalkerLevel(xp)` (`src/stalkers.js`) : `1 + xp/xpPerLevel` (2), plafonné à `maxLevel` (5) ; +1 xp par retour vivant ; chaque niveau rabote `deathPerLevel` (0.03) de risque |
 | Risque personnalisé | `deathChance(state, stalkerId, zone)` (`src/expeditions.js`) : `death + prime` × trait − niveaux, plancher `minDeath` (0.02) — affiché par zone pour le stalker sélectionné |
-| Recrutement | `recruitStalker(state, id)` (`src/stalkers.js`) : coût `hireCost` (800 ₽), cap `maxHired` (4), pool = `recruitPool` (ni embauché, ni mort) → `stalker:recruited` |
+| Recrutement | `recruitStalker(state, id)` (`src/stalkers.js`) : coût `hireCost` (800 ₽), cap `maxCrew` = `maxHired` (4) +1 avec la Planque agrandie, pool = `recruitPool` (ni embauché, ni mort) → `stalker:recruited` |
 | Sélection | `selectStalker(state, id)` — pattern `sellFaction` : barre `#roster` (`data-act="stalker"`), le bouton de zone envoie le stalker actif |
 | Lancement | `launchExp(state, zid)` — garde : stalker actif embauché et disponible (`isBusy`) ; débite `fee` → `expedition:launched {zoneId, stalkerId, fee}` |
 | Résolution | `resolveExps` (dans `nextDay`) : jet contre `deathChance` → mort **permanente** (retiré du roster, poussé dans `fallen`, `activeStalker` bascule) `expedition:lost {stalkerId, level}` ; sinon butin + 1 xp `expedition:returned`, et `stalker:promoted {level}` au passage de niveau |
-| Limite | `EXPEDITIONS.maxActive` (2) expéditions simultanées + 1 mission max par stalker |
+| Limite | `maxExpeditions` = `EXPEDITIONS.maxActive` (2) +1 avec le Guide de la Zone ; 1 mission max par stalker |
 | Rendu | `renderExp` (`render/hud.js`) : roster, campement (`#recruits`, `data-act="recruit"`), zones avec risque personnalisé et label « Envoyer \<nom\> » |
 | Réglages | groupe `ROSTER` — `src/config.js` |
 

@@ -12,7 +12,7 @@ auto_invoke: true
 |---|---|
 | Prix courant | `state.price[id]`, initialisé à `ITEMS[].base` dans `createApp` |
 | Prix d'achat | `buyPrice(state, id)` = `round(price × TRADE.buyMarkup)` (1.05) — `src/market.js` |
-| Prix de vente à une faction | `sellPrice(state, id, fac)` = `round(price × PREF[fac][cat] × (1 + rep/TRADE.repPriceDiv) × TRADE.merchantMargin × catDemand)` — soit préférence × bonus réput (±33 %) × marge 0.9 × demande conjoncturelle |
+| Prix de vente à une faction | `sellPrice(state, id, fac)` = `round(price × PREF[fac][cat] × (1 + rep/TRADE.repPriceDiv) × TRADE.merchantMargin × catDemand × contact)` — préférence × bonus réput (±33 %) × marge 0.9 × demande conjoncturelle × amélioration Contact (1.08 si possédée) |
 | Préférences de faction | `PREF` (`src/config.js`) — multiplicateur par catégorie (ex. Liberté paie les artefacts ×1.35) |
 | Demande conjoncturelle | `catDemand(state, fac, cat)` (`src/factions.js`) : contrat de catégorie ×1.5, guerre (armes/conso pour l'agresseur) ×1.35, raid (bandits) ×1.2 |
 | Achat | `buy(state, id, n)` — s'arrête à court d'argent, émet `item:bought {id, count}` (toujours, même count 0) |
