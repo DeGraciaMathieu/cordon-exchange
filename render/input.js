@@ -6,6 +6,7 @@ import { acceptDelivery, deliverContract } from "../src/contracts.js";
 import { payRansom } from "../src/factions.js";
 import { chooseEncounter } from "../src/encounters.js";
 import { recruitStalker, selectStalker } from "../src/stalkers.js";
+import { buyUpgrade } from "../src/upgrades.js";
 import { $, renderAll, renderSell, renderExp } from "./hud.js";
 
 export function bindInput(state) {
@@ -39,6 +40,7 @@ export function bindInput(state) {
     else if (act === "ransom") payRansom(state, id);
     else if (act === "encounter") chooseEncounter(state, id);
     else if (act === "recruit") recruitStalker(state, id);
+    else if (act === "upgrade") buyUpgrade(state, id);
     else return;
     renderAll(state);
   });

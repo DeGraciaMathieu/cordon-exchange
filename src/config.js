@@ -276,6 +276,16 @@ export const DELIVERY = {
   failRep: -18,
 };
 
+// permanent hideout upgrades — fx is the effect value wired into the owning module
+export const UPGRADES = [
+  { id: "leadbox",   nm: "Caisse plombée",     ico: "🧰", cost: 3500, fx: 0.5,  desc: "les artefacts stockés irradient moitié moins" },   // radsDose multiplier
+  { id: "thirdslot", nm: "Guide de la Zone",   ico: "🗺️", cost: 4000, fx: 1,    desc: "une expédition simultanée de plus" },              // extra expedition slot
+  { id: "contact",   nm: "Contact au comptoir", ico: "🤝", cost: 3000, fx: 1.08, desc: "les factions paient 8 % de mieux" },              // sellPrice multiplier
+  { id: "watchdog",  nm: "Chien de garde",     ico: "🐕", cost: 2000, fx: 0.5,  desc: "vols et embuscades deux fois plus rares" },        // night-event chance multiplier
+  { id: "hideout",   nm: "Planque agrandie",   ico: "🏚️", cost: 2500, fx: 1,    desc: "une place de plus dans l'équipe" },                // extra crew slot
+];
+export const upgradeById = id => UPGRADES.find(u => u.id === id);
+
 // [amount repaid, journal text]
 export const STORY_BEATS = [
   [8000, "Le Fixeur t'envoie un gamin : « Le patron apprécie la régularité. Continue. »"],

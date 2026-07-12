@@ -3,16 +3,18 @@ import { ITEMS, PREF, TRADE, MARKET, HAGGLE, itemById } from "./config.js";
 import { clamp } from "./util.js";
 import { catDemand, repMult, marketClosed, marketCatMult } from "./factions.js";
 import { shiftRep } from "./reputation.js";
+import { upgradeFx } from "./upgrades.js";
 
 export function buyPrice(state, id) {
   return Math.round(state.price[id] * TRADE.buyMarkup);
 }
 
-// price a faction pays for an item (reputation + category preference + demand)
+// price a faction pays for an item (reputation + category preference + demand + inside contact)
 export function sellPrice(state, id, fac) {
   const it = itemById(id);
   const repBonus = 1 + state.rep[fac] / TRADE.repPriceDiv;
-  return Math.round(state.price[id] * PREF[fac][it.cat] * repBonus * TRADE.merchantMargin * catDemand(state, fac, it.cat));
+  return Math.round(state.price[id] * PREF[fac][it.cat] * repBonus * TRADE.merchantMargin
+    * catDemand(state, fac, it.cat) * upgradeFx(state, "contact", 1));
 }
 
 export function buy(state, id, n) {

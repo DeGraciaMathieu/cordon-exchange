@@ -1,8 +1,12 @@
 // Stalker expeditions: send a hired stalker into a zone, resolve returns.
-import { ZONES, ROSTER, stalkerById } from "./config.js";
+import { ZONES, ROSTER, EXPEDITIONS, stalkerById } from "./config.js";
 import { pick, randInt } from "./rng.js";
 import { bountyExtraDeath } from "./factions.js";
 import { stalkerLevel, isBusy } from "./stalkers.js";
+import { upgradeFx } from "./upgrades.js";
+
+// concurrent expedition cap, raised by the Zone guide upgrade
+export const maxExpeditions = state => EXPEDITIONS.maxActive + upgradeFx(state, "thirdslot", 0);
 
 // personal odds: zone danger, bounty, trait and experience all weigh in
 export function deathChance(state, stalkerId, z) {

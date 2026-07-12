@@ -1,11 +1,12 @@
 // All DOM rendering: top bar, grids, contracts, expeditions, journal, toast, modal.
-import { FACTIONS, PREF, ITEMS, ZONES, MAX_DAY, EXPEDITIONS, FACTION_EVENTS, HAGGLE, RADIATION, TRAITS, ROSTER, itemById, encounterById, stalkerById } from "../src/config.js";
+import { FACTIONS, PREF, ITEMS, ZONES, MAX_DAY, FACTION_EVENTS, HAGGLE, RADIATION, TRAITS, ROSTER, UPGRADES, itemById, encounterById, stalkerById } from "../src/config.js";
 import { buyPrice, sellPrice, isUndervalued } from "../src/market.js";
 import { marketClosed, zoneBlocked, bountyExtraDeath } from "../src/factions.js";
 import { canPick } from "../src/encounters.js";
 import { radsDose } from "../src/radiation.js";
-import { deathChance } from "../src/expeditions.js";
-import { stalkerLevel, isBusy, recruitPool } from "../src/stalkers.js";
+import { deathChance, maxExpeditions } from "../src/expeditions.js";
+import { stalkerLevel, isBusy, recruitPool, maxCrew } from "../src/stalkers.js";
+import { hasUpgrade } from "../src/upgrades.js";
 
 export const $ = s => document.querySelector(s);
 export const fmt = n => Math.round(n).toLocaleString("fr-FR") + " ₽";
@@ -169,13 +170,13 @@ export function renderExp(state) {
   const zc = $("#zones");
   zc.innerHTML = "";
   ZONES.forEach(z => {
-    const busyAll = state.exps.length >= EXPEDITIONS.maxActive;
+    const busyAll = state.exps.length >= maxExpeditions(state);
     const blocked = zoneBlocked(state, z.id);
     const canGo = state.money >= z.fee && !busyAll && !blocked && !state.over && idle;
     const d = rec ? deathChance(state, rec.id, z) : z.death + extra;
     const rk = d < .1 ? "faible" : d < .2 ? "modéré" : d < .35 ? "élevé" : "mortel";
     const rkcol = d < .1 ? "var(--rad)" : d < .2 ? "var(--gold)" : d < .35 ? "var(--rust)" : "var(--danger)";
-    const label = blocked ? "🚧 Zone sous blocus" : busyAll ? `${EXPEDITIONS.maxActive} expéditions max en cours`
+    const label = blocked ? "🚧 Zone sous blocus" : busyAll ? `${maxExpeditions(state)} expéditions max en cours`
       : !idle ? "Aucun stalker disponible" : `Envoyer ${stalkerById(rec.id).name}`;
     zc.innerHTML += `<div class="zone" ${blocked ? 'style="opacity:.55"' : ""}>
       <h3>${z.nm} <span style="color:var(--gold)">${fmt(z.fee)}</span></h3>
@@ -188,7 +189,7 @@ export function renderExp(state) {
 
   // recruits waiting at the camp
   const pool = recruitPool(state);
-  const full = state.stalkers.length >= ROSTER.maxHired;
+  const full = state.stalkers.length >= maxCrew(state);
   $("#recruits").innerHTML = pool.length ? pool.map(def => {
     const t = TRAITS[def.trait];
     const can = state.money >= ROSTER.hireCost && !full && !state.over;
@@ -273,6 +274,20 @@ export function renderContracts(state) {
   $("#contractBadge").innerHTML = n ? `<span class="badge">${n}</span>` : "";
 }
 
+export function renderUpgrades(state) {
+  $("#upgradesGrid").innerHTML = UPGRADES.map(u => {
+    const owned = hasUpgrade(state, u.id);
+    const can = !owned && state.money >= u.cost && !state.over;
+    return `<div class="card gear${owned ? " deal" : ""}">
+      <div class="ico">${u.ico}</div>
+      <div class="nm">${u.nm}</div>
+      <div class="rad" style="color:var(--dim)">${u.desc}</div>
+      <div class="price">${owned ? "✓ installée" : fmt(u.cost)}</div>
+      <button class="btn sm" ${can ? "" : "disabled"} data-act="upgrade" data-id="${u.id}">${owned ? "Acquise" : "Acheter"}</button>
+    </div>`;
+  }).join("");
+}
+
 export function renderAll(state) {
   renderTop(state);
   renderFacEvents(state);
@@ -281,4 +296,5 @@ export function renderAll(state) {
   renderSell(state);
   renderContracts(state);
   renderExp(state);
+  renderUpgrades(state);
 }

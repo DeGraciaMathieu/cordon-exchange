@@ -2,7 +2,7 @@
 import { mulberry32 } from "../src/rng.js";
 import { createApp } from "../src/app.js";
 import {
-  FACTIONS, ZONES, MAX_DAY, DEBT, BOUNTY, DELIVERY, FACTION_EVENTS, RADIATION, TRAITS, itemById, stalkerById,
+  FACTIONS, ZONES, MAX_DAY, DEBT, BOUNTY, DELIVERY, FACTION_EVENTS, RADIATION, TRAITS, itemById, stalkerById, upgradeById,
 } from "../src/config.js";
 import { $, fmt, log, dayLog, toast, showModal, renderAll, renderTop } from "./hud.js";
 import { bindInput } from "./input.js";
@@ -113,6 +113,13 @@ bus.on("stalker:recruited", ({ stalkerId }) => {
   const def = stalkerById(stalkerId);
   log(`🤝 <b>${def.name}</b> rejoint ton équipe — ${TRAITS[def.trait].nm} : ${TRAITS[def.trait].desc}.`);
   toast(`${def.name} recruté`);
+});
+
+/* upgrades */
+bus.on("upgrade:bought", ({ upgradeId }) => {
+  const u = upgradeById(upgradeId);
+  log(`🔧 <b>${u.nm}</b> installée : ${u.desc}. <b class="bad">-${fmt(u.cost)}</b>`);
+  toast(`${u.nm} installée`);
 });
 
 /* encounters */

@@ -37,6 +37,7 @@ export function createApp({ rng }) {
     stalkers: ROSTER.start.map(id => ({ id, xp: 0 })),
     activeStalker: ROSTER.start[0],
     fallen: [],
+    upgrades: [],
   };
   ITEMS.forEach(i => { state.price[i.id] = i.base; state.history[i.id] = [i.base]; state.inv[i.id] = 0; });
   Object.assign(state.inv, START.inv);

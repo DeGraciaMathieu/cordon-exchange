@@ -5,6 +5,7 @@ import {
 } from "./config.js";
 import { pick, randInt } from "./rng.js";
 import { shiftRep } from "./reputation.js";
+import { upgradeFx } from "./upgrades.js";
 
 export const marketClosed = (state, fac) =>
   state.factionEvents.some(e => (e.type === "war" && e.b === fac) || (e.type === "bounty" && e.fac === fac));
@@ -74,7 +75,7 @@ export function spawnFactionEvent(state) {
 }
 
 function nightRaid(state) {
-  if (state.rng() < FE.raidTheftChance) {
+  if (state.rng() < FE.raidTheftChance * upgradeFx(state, "watchdog", 1)) {
     const owned = ITEMS.filter(it => state.inv[it.id] > 0);
     if (owned.length) {
       const it = pick(state.rng, owned);
@@ -85,7 +86,7 @@ function nightRaid(state) {
 }
 
 function bountyNight(state, e) {
-  if (state.rng() < BOUNTY.ambushChance) {
+  if (state.rng() < BOUNTY.ambushChance * upgradeFx(state, "watchdog", 1)) {
     const loss = Math.min(state.money, Math.round(BOUNTY.ambushLossBase + state.rng() * BOUNTY.ambushLossSpan));
     if (loss > 0) {
       state.money -= loss;
