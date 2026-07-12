@@ -1,6 +1,6 @@
 // Mouse input: tab navigation and click delegation to game actions.
 import { nextDay } from "../src/app.js";
-import { buy, sell, selectFaction } from "../src/market.js";
+import { buy, sell, haggle, selectFaction } from "../src/market.js";
 import { launchExp } from "../src/expeditions.js";
 import { acceptDelivery, deliverContract } from "../src/contracts.js";
 import { payRansom } from "../src/factions.js";
@@ -30,6 +30,7 @@ export function bindInput(state) {
     if (act === "faction") { selectFaction(state, id); renderSell(state); return; }
     if (act === "buy") buy(state, id, +n);
     else if (act === "sell") sell(state, id, +n);
+    else if (act === "haggle") haggle(state, id);
     else if (act === "expedition") launchExp(state, id);
     else if (act === "accept") acceptDelivery(state, +id);
     else if (act === "deliver") deliverContract(state, +id);

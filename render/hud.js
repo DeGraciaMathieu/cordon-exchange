@@ -1,5 +1,5 @@
 // All DOM rendering: top bar, grids, contracts, expeditions, journal, toast, modal.
-import { FACTIONS, PREF, ITEMS, ZONES, MAX_DAY, EXPEDITIONS, FACTION_EVENTS, itemById, encounterById } from "../src/config.js";
+import { FACTIONS, PREF, ITEMS, ZONES, MAX_DAY, EXPEDITIONS, FACTION_EVENTS, HAGGLE, itemById, encounterById } from "../src/config.js";
 import { buyPrice, sellPrice } from "../src/market.js";
 import { marketClosed, zoneBlocked, bountyExtraDeath } from "../src/factions.js";
 import { canPick } from "../src/encounters.js";
@@ -86,7 +86,7 @@ function renderFactionBar(state) {
   }
   const fac = state.sellFaction;
   const best = Object.entries(PREF[fac]).sort((a, b) => b[1] - a[1])[0][0];
-  $("#sellNote").innerHTML = `<b style="color:${FACTIONS[fac].color}">${FACTIONS[fac].name}</b> paie le mieux la catégorie « <b>${best}</b> ». Vendre ici modifie ta réputation avec les autres.`;
+  $("#sellNote").innerHTML = `<b style="color:${FACTIONS[fac].color}">${FACTIONS[fac].name}</b> paie le mieux la catégorie « <b>${best}</b> ». Vendre ici modifie ta réputation avec les autres. 🎲 Marchander : +${Math.round(HAGGLE.bonus * 100)}% si ça passe, réput −${HAGGLE.repPenalty} si ça vexe.`;
 }
 
 export function renderSell(state) {
@@ -110,6 +110,7 @@ export function renderSell(state) {
         <button class="btn sm" ${state.over ? "disabled" : ""} data-act="sell" data-id="${it.id}" data-n="1">Vendre</button>
         <button class="btn sm" ${state.inv[it.id] >= 5 && !state.over ? "" : "disabled"} data-act="sell" data-id="${it.id}" data-n="999">Tout</button>
       </div>
+      <button class="btn sm" ${state.over ? "disabled" : ""} data-act="haggle" data-id="${it.id}">🎲 Marchander (+${Math.round(HAGGLE.bonus * 100)}%)</button>
     </div>`;
   });
 }

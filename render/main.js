@@ -30,6 +30,15 @@ bus.on("item:sold", ({ id, fac, count, total, gain }) => {
   toast(`+${fmt(total)}`);
 });
 bus.on("trade:blocked", ({ fac }) => toast(`Comptoir ${FACTIONS[fac].name} fermé (guerre)`));
+bus.on("trade:haggled", ({ id, fac, success, price, gain, penalty }) => {
+  if (success) {
+    log(`🎲 Tu pousses le prix et les ${facName(fac)} cèdent : ${itemById(id).nm} vendu <b class="good">${fmt(price)}</b>. Réput ${FACTIONS[fac].name} +${gain}.`, "good");
+    toast(`+${fmt(price)}`);
+  } else {
+    log(`🎲 Les ${facName(fac)} se vexent de ton marchandage et tournent les talons. Réput ${FACTIONS[fac].name} -${penalty}.`, "bad");
+    toast("Marchandage refusé");
+  }
+});
 
 /* faction events */
 bus.on("faction:war-started", ({ a, b }) =>

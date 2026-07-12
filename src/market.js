@@ -1,5 +1,5 @@
 // Market prices, buying, and selling to factions.
-import { ITEMS, PREF, TRADE, MARKET, itemById } from "./config.js";
+import { ITEMS, PREF, TRADE, MARKET, HAGGLE, itemById } from "./config.js";
 import { clamp } from "./util.js";
 import { catDemand, repMult, marketClosed, marketCatMult } from "./factions.js";
 import { shiftRep } from "./reputation.js";
@@ -27,6 +27,19 @@ export function buy(state, id, n) {
   state.bus.emit("item:bought", { id, count });
 }
 
+// reputation gain and war support shared by every kind of sale
+function saleRepGain(state, fac, it, count) {
+  let gain = TRADE.repGainBase + Math.round(count * (it.cat === "artefact" ? TRADE.artefactRepFactor : 1));
+  if (fac === "bandits") gain = Math.round(gain * TRADE.banditRepFactor);
+  gain = Math.round(gain * repMult(state, fac, it.cat));
+  shiftRep(state, fac, gain);
+  // war support: supplying the aggressor with weapons or consumables
+  state.factionEvents.forEach(e => {
+    if (e.type === "war" && e.a === fac && (it.cat === "arme" || it.cat === "conso")) e.support += count;
+  });
+  return gain;
+}
+
 export function sell(state, id, n) {
   const fac = state.sellFaction;
   if (marketClosed(state, fac)) { state.bus.emit("trade:blocked", { fac }); return; }
@@ -39,16 +52,25 @@ export function sell(state, id, n) {
     count++;
   }
   if (count) {
-    const it = itemById(id);
-    let gain = TRADE.repGainBase + Math.round(count * (it.cat === "artefact" ? TRADE.artefactRepFactor : 1));
-    if (fac === "bandits") gain = Math.round(gain * TRADE.banditRepFactor);
-    gain = Math.round(gain * repMult(state, fac, it.cat));
-    shiftRep(state, fac, gain);
-    // war support: supplying the aggressor with weapons or consumables
-    state.factionEvents.forEach(e => {
-      if (e.type === "war" && e.a === fac && (it.cat === "arme" || it.cat === "conso")) e.support += count;
-    });
+    const gain = saleRepGain(state, fac, itemById(id), count);
     state.bus.emit("item:sold", { id, fac, count, total, gain });
+  }
+}
+
+// haggle: try to sell one item at +15%; on refusal the faction is vexed and keeps its money
+export function haggle(state, id) {
+  const fac = state.sellFaction;
+  if (marketClosed(state, fac)) { state.bus.emit("trade:blocked", { fac }); return; }
+  if (state.inv[id] <= 0) return;
+  if (state.rng() < HAGGLE.chance) {
+    const price = Math.round(sellPrice(state, id, fac) * (1 + HAGGLE.bonus));
+    state.money += price;
+    state.inv[id]--;
+    const gain = saleRepGain(state, fac, itemById(id), 1);
+    state.bus.emit("trade:haggled", { id, fac, success: true, price, gain });
+  } else {
+    shiftRep(state, fac, -HAGGLE.repPenalty);
+    state.bus.emit("trade:haggled", { id, fac, success: false, penalty: HAGGLE.repPenalty });
   }
 }
 

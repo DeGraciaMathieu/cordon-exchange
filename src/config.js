@@ -171,6 +171,13 @@ export const TRADE = {
   banditRepFactor: 0.7,
 };
 
+// haggling: a small bet on every sale — push the price or vex the faction
+export const HAGGLE = {
+  bonus: 0.15,   // price uplift when the haggle lands
+  chance: 0.5,   // odds the faction accepts
+  repPenalty: 4, // reputation lost when the faction is vexed (no sale)
+};
+
 export const MARKET = {
   meanPull: 0.15, // daily pull back toward the base price
   minMult: 0.4,   // price floor relative to base
