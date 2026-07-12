@@ -1,6 +1,6 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { ITEMS, ZONES, FACTIONS, FACTION_IDS, CATEGORIES, PREF, ENCOUNTERS, itemById } from "../src/config.js";
+import { ITEMS, ZONES, FACTIONS, FACTION_IDS, CATEGORIES, PREF, ENCOUNTERS, STALKERS, TRAITS, ROSTER, itemById, stalkerById } from "../src/config.js";
 
 test("item ids are unique", () => {
   assert.equal(new Set(ITEMS.map(i => i.id)).size, ITEMS.length);
@@ -18,6 +18,13 @@ test("faction allies and rivals reference existing factions", () => {
 
 test("every faction prices every category", () => {
   FACTION_IDS.forEach(f => CATEGORIES.forEach(c => assert.equal(typeof PREF[f][c], "number")));
+});
+
+test("stalkers have unique ids, valid traits, and a valid starting crew", () => {
+  assert.equal(new Set(STALKERS.map(s => s.id)).size, STALKERS.length);
+  STALKERS.forEach(s => assert.ok(TRAITS[s.trait], `${s.id} trait ${s.trait}`));
+  ROSTER.start.forEach(id => assert.ok(stalkerById(id), `start ${id}`));
+  assert.ok(ROSTER.start.length <= ROSTER.maxHired);
 });
 
 test("encounters have 2-3 options referencing existing items and factions", () => {
