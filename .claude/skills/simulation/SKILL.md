@@ -49,5 +49,6 @@ auto_invoke: true
 
 - La victoire se joue **avant** l'avancée du jour : gagner au jour N affiche « en N jours ».
 - Après `game:ended`, `render/input.js` ne relance pas `renderAll` (c'est le handler `game:ended` de `main.js` qui rend la barre + la modale).
+- Après chaque `nextDay` (hors fin de partie), `render/input.js` affiche un rapport de nuit bloquant (`showNightRecap`, `render/hud.js`) construit à partir des entrées de journal ajoutées pendant l'appel — pur rendu, rien dans `src/`.
 - Le reset de partie est `location.reload()` — il n'existe pas de fonction reset dans `src/`.
 - Le 3ᵉ jalon (24 000) est inatteignable (dette max 22 000) — quirk préservé volontairement.

@@ -29,7 +29,7 @@ Séparation stricte logique/rendu : `render/` importe `src/`, jamais l'inverse. 
 | `src/radiation.js` | Radiations du joueur : `radsDose`, `tickRadiation` (dose nocturne des artefacts, récupération, mal des rads, mort) | config |
 | `src/app.js` | `createApp({rng})` → `state` ; `nextDay(state)` — orchestration du jour | tous les modules `src/` |
 | `render/main.js` | Point d'entrée : crée le `state`, abonne le bus (~25 événements → journal/toast/modale), messages français, init | `src/*`, hud, input |
-| `render/hud.js` | Tout le rendu DOM : `renderAll` + `renderTop/Market/Sell/Contracts/Exp/FacEvents`, helpers `$`, `fmt`, `log`, `toast`, `showModal` | `src/` (lecture seule) |
+| `render/hud.js` | Tout le rendu DOM : `renderAll` + `renderTop/Market/Sell/Contracts/Exp/FacEvents`, helpers `$`, `fmt`, `log`, `toast`, `showModal`, `showNightRecap` | `src/` (lecture seule) |
 | `render/input.js` | `bindInput(state)` : onglets + délégation de clics `data-act` → actions `src/` | actions `src/`, hud |
 | `test/*.test.js` | Tests macro `node --test` | `src/` uniquement |
 
