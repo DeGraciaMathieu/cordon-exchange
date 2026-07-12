@@ -10,13 +10,14 @@ auto_invoke: true
 
 | Concept | Implémentation |
 |---|---|
-| État complet | `createApp({rng})` — `src/app.js`. Champs : `day`, `money`, `debt`, `rep{fac}`, `price{id}`, `inv{id}`, `exps[]`, `factionEvents[]`, `deliveryOffers[]`, `activeDeliveries[]`, `contractSeq`, `sellFaction`, `milestones{}`, `over`, plus `rng` et `bus` |
+| État complet | `createApp({rng})` — `src/app.js`. Champs : `day`, `money`, `debt`, `rep{fac}`, `price{id}`, `inv{id}`, `exps[]`, `factionEvents[]`, `deliveryOffers[]`, `activeDeliveries[]`, `contractSeq`, `sellFaction`, `milestones{}`, `over`, `encounter`, `marketTip`, plus `rng` et `bus` |
 | Valeurs de départ | `START` et `DEBT.start` (22 000) — `src/config.js` ; inventaire initial : 1 Méduse, 2 Saucissons |
 | Boucle de jour | `nextDay(state)` — `src/app.js`, seule porte d'entrée de la simulation (bouton « Dormir ») |
 | Dette | `DEBT { start: 22000, garnish: 0.5 }` — prélèvement nocturne de 50 % du cash en tête de `nextDay` → `debt:paid` |
 | Jalons narratifs | `STORY_BEATS` (config) + `checkStory` (app.js), déclenchés sur le total remboursé → `story:reached` (une seule fois, via `state.milestones`) |
 | Fin de partie | `endGame` (interne) : `state.over = true` + `game:ended {win, day, money, debt}`. Victoire = dette soldée ; défaite = `day > MAX_DAY` (24) |
-| Événement de marché du jour | tiré dans `MARKET_EVENTS` (config) → `market:shifted {ev}` → `fluctuate(state, ev)` |
+| Événement de marché du jour | tiré dans `MARKET_EVENTS` (config) — **forcé par `state.marketTip` si armé** (tuyau de rencontre, consommé après usage) → `market:shifted {ev}` → `fluctuate(state, ev)` |
+| Rencontre du jour | `state.encounter` `{id}` tiré par `drawEncounter` (`src/encounters.js`) — dans `createApp` (jour 1) puis chaque jour dans `nextDay` ; la carte non jouée est remplacée (voir skill `rencontres`) |
 
 ## Ordre exact de `nextDay` (ne pas réordonner sans raison)
 
@@ -32,7 +33,8 @@ auto_invoke: true
 10. Spawn éventuel d'un événement de faction (`day ≥ 3`, p = 0,45 — `FACTION_EVENTS.spawnFromDay/spawnChance`).
 11. Offre de livraison éventuelle (`day ≥ 2`, p = 0,5 — `DELIVERY.spawnFromDay/spawnChance`).
 12. `checkBounty` (réputation ≤ −70 → prime).
-13. Tirage de l'événement de marché → `market:shifted` → `fluctuate`.
+13. `drawEncounter` — la carte de la veille, jouée ou non, est remplacée.
+14. Tirage de l'événement de marché (forcé par `state.marketTip` s'il est armé, puis remis à `null`) → `market:shifted` → `fluctuate`.
 
 ## Ajouter un champ d'état
 

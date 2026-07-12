@@ -8,7 +8,7 @@ auto_invoke: true
 
 ## Commandes
 
-- `npm test` — toute la suite (`node --test test/`), 38 tests, ~1,5 s, zéro dépendance.
+- `npm test` — toute la suite (`node --test test/`), ~1,5 s, zéro dépendance.
 - `node --test test/market.test.js` — un seul fichier.
 
 ## Philosophie : tests macro
@@ -36,6 +36,7 @@ Zéro mock : `src/` s'importe tel quel dans Node. Pas d'assertion sur des détai
 | `test/factions.test.js` | Résolution de guerre (gagnée/enlisée), prime (déclenchement, rançon, refus), cap d'événements, blocus, demande de catégorie |
 | `test/contracts.test.js` | Cycle offre → acceptation → livraison, livraison partielle, échéance ratée, expiration des offres |
 | `test/expeditions.test.js` | Coût du lancement, retour avec butin, expédition perdue |
+| `test/encounters.test.js` | Tirage quotidien, effets d'option, needs non remplis, risque succès/échec, tuyau marché |
 | `test/reputation.test.js` | Retombées alliés/rivaux, clamp ±100 |
 | `test/rng.test.js` | Déterminisme, bornes [0,1), `pick`/`randInt` |
 | `test/events.test.js` | Bus : ordre de livraison, émission sans abonné |
