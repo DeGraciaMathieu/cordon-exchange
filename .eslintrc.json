@@ -1,0 +1,34 @@
+{
+  "root": true,
+  "parserOptions": { "ecmaVersion": 2022, "sourceType": "module" },
+  "env": { "es2022": true },
+  "extends": "eslint:recommended",
+  "overrides": [
+    {
+      "files": ["src/**/*.js"],
+      "rules": {
+        "no-restricted-globals": [
+          "error",
+          { "name": "document", "message": "src/ is pure: no DOM access (CLAUDE.md rule 2)." },
+          { "name": "window", "message": "src/ is pure: no DOM access (CLAUDE.md rule 2)." },
+          { "name": "setTimeout", "message": "src/ is pure: no timers (CLAUDE.md rule 2)." },
+          { "name": "setInterval", "message": "src/ is pure: no timers (CLAUDE.md rule 2)." },
+          { "name": "requestAnimationFrame", "message": "src/ is pure: no render loop (CLAUDE.md rule 2)." },
+          { "name": "performance", "message": "src/ is pure: no wall clock (CLAUDE.md rule 2)." }
+        ],
+        "no-restricted-properties": [
+          "error",
+          { "object": "Math", "property": "random", "message": "Use state.rng / pick / randInt instead (CLAUDE.md rule 3)." }
+        ]
+      }
+    },
+    {
+      "files": ["render/**/*.js"],
+      "env": { "browser": true }
+    },
+    {
+      "files": ["test/**/*.js"],
+      "env": { "node": true }
+    }
+  ]
+}

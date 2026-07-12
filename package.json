@@ -4,6 +4,10 @@
   "type": "module",
   "scripts": {
     "test": "node --test test/",
-    "dev": "npx serve ."
+    "dev": "npx serve .",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "eslint": "^8.57.1"
   }
 }
